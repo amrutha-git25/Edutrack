@@ -1,0 +1,806 @@
+
+.enroll-all-page {
+  --enroll-bg: var(--surface, #ffffff);
+  --enroll-card: var(--surface-raised, var(--surface, #ffffff));
+  --enroll-text: var(--text, #202338);
+  --enroll-muted: var(--muted, #74798d);
+  --enroll-border: var(--border, #e7e8ef);
+  --enroll-accent: var(--accent, #7856e8);
+  --enroll-accent-soft: color-mix(
+    in srgb,
+    var(--enroll-accent) 10%,
+    transparent
+  );
+
+  width: 100%;
+  min-width: 0;
+  padding: 28px;
+  color: var(--enroll-text);
+  background: transparent;
+  font-family: inherit;
+}
+
+.enroll-all-page *,
+.enroll-all-page *::before,
+.enroll-all-page *::after {
+  box-sizing: border-box;
+}
+
+.enroll-all-page button,
+.enroll-all-page input {
+  font: inherit;
+}
+
+.enroll-all-page button:focus-visible,
+.enroll-all-page input:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--enroll-accent) 45%, transparent);
+  outline-offset: 3px;
+}
+
+.enroll-page-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 26px;
+}
+
+.enroll-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--enroll-accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.enroll-page-heading h1 {
+  margin: 0;
+  color: var(--enroll-text);
+  font-size: clamp(25px, 3vw, 34px);
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.enroll-page-heading p {
+  max-width: 650px;
+  margin: 10px 0 0;
+  color: var(--enroll-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.enroll-primary-button,
+.enroll-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 43px;
+  padding: 11px 17px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.enroll-primary-button {
+  color: #ffffff;
+  background: var(--enroll-accent);
+  box-shadow: 0 5px 14px
+    color-mix(in srgb, var(--enroll-accent) 20%, transparent);
+}
+
+.enroll-primary-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+
+.enroll-secondary-button {
+  color: var(--enroll-text);
+  background: var(--enroll-card);
+  border-color: var(--enroll-border);
+}
+
+.enroll-secondary-button:hover:not(:disabled) {
+  border-color: var(--enroll-accent);
+  background: var(--enroll-accent-soft);
+}
+
+.enroll-primary-button:disabled,
+.enroll-secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.enroll-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--enroll-border);
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.enroll-alert > span {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.enroll-alert button {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  padding: 4px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.enroll-alert-error {
+  color: #c0394b;
+  background: color-mix(in srgb, #e34d62 8%, var(--enroll-bg));
+  border-color: color-mix(in srgb, #e34d62 25%, var(--enroll-border));
+}
+
+.enroll-alert-success {
+  color: #178052;
+  background: color-mix(in srgb, #25b879 8%, var(--enroll-bg));
+  border-color: color-mix(in srgb, #25b879 25%, var(--enroll-border));
+}
+
+.enroll-info-strip {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding: 19px 21px;
+  border: 1px solid color-mix(in srgb, var(--enroll-accent) 22%, var(--enroll-border));
+  border-radius: 15px;
+  background: var(--enroll-accent-soft);
+}
+
+.enroll-info-icon,
+.enroll-action-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  color: var(--enroll-accent);
+  background: color-mix(in srgb, var(--enroll-accent) 13%, var(--enroll-card));
+  border-radius: 12px;
+}
+
+.enroll-info-strip strong {
+  display: block;
+  margin: 1px 0 5px;
+  color: var(--enroll-text);
+  font-size: 14px;
+}
+
+.enroll-info-strip p {
+  margin: 0;
+  color: var(--enroll-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.enroll-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 17px;
+  margin-bottom: 27px;
+}
+
+.enroll-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 0;
+  padding: 21px;
+  background: var(--enroll-card);
+  border: 1px solid var(--enroll-border);
+  border-radius: 15px;
+  box-shadow: 0 4px 18px rgb(0 0 0 / 3%);
+}
+
+.enroll-stat-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  font-size: 18px;
+}
+
+.enroll-stat-icon.purple {
+  color: #7856e8;
+  background: #7856e81a;
+}
+
+.enroll-stat-icon.green {
+  color: #19976a;
+  background: #19976a1a;
+}
+
+.enroll-stat-icon.yellow {
+  color: #b98214;
+  background: #eab83a24;
+}
+
+.enroll-stat-card > div:last-child {
+  min-width: 0;
+}
+
+.enroll-stat-card span,
+.enroll-stat-card small {
+  display: block;
+  color: var(--enroll-muted);
+}
+
+.enroll-stat-card span {
+  margin-bottom: 7px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.enroll-stat-card strong {
+  display: block;
+  overflow: hidden;
+  color: var(--enroll-text);
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+}
+
+.enroll-stat-card small {
+  overflow: hidden;
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.enroll-workspace,
+.enroll-results {
+  margin-bottom: 25px;
+  padding: 25px;
+  background: var(--enroll-card);
+  border: 1px solid var(--enroll-border);
+  border-radius: 17px;
+  box-shadow: 0 4px 18px rgb(0 0 0 / 3%);
+}
+
+.enroll-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.enroll-section-heading h2,
+.enroll-action-copy h2 {
+  margin: 0;
+  color: var(--enroll-text);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.enroll-section-heading p,
+.enroll-action-copy p {
+  margin: 7px 0 0;
+  color: var(--enroll-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.enroll-step-label {
+  flex-shrink: 0;
+  padding: 7px 10px;
+  color: var(--enroll-accent);
+  background: var(--enroll-accent-soft);
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.enroll-course-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 24px 0 19px;
+}
+
+.enroll-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 380px);
+  min-height: 43px;
+  padding: 0 13px;
+  color: var(--enroll-muted);
+  background: var(--enroll-bg);
+  border: 1px solid var(--enroll-border);
+  border-radius: 10px;
+}
+
+.enroll-search > span {
+  font-size: 23px;
+  line-height: 1;
+}
+
+.enroll-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 0;
+  color: var(--enroll-text);
+  background: transparent;
+  border: 0;
+  outline: none;
+  font-size: 12px;
+}
+
+.enroll-search input::placeholder {
+  color: var(--enroll-muted);
+  opacity: 0.85;
+}
+
+.enroll-search input:focus-visible {
+  outline: none;
+}
+
+.enroll-course-count {
+  flex-shrink: 0;
+  color: var(--enroll-muted);
+  font-size: 12px;
+}
+
+.enroll-course-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.enroll-course-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 184px;
+  padding: 18px;
+  text-align: left;
+  color: var(--enroll-text);
+  background: var(--enroll-bg);
+  border: 1px solid var(--enroll-border);
+  border-radius: 14px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.enroll-course-card:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--enroll-accent) 55%, var(--enroll-border));
+}
+
+.enroll-course-card.selected {
+  background: var(--enroll-accent-soft);
+  border-color: var(--enroll-accent);
+  box-shadow: 0 0 0 2px
+    color-mix(in srgb, var(--enroll-accent) 12%, transparent);
+}
+
+.enroll-course-card:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.enroll-course-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.enroll-course-symbol {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: var(--enroll-accent);
+  background: var(--enroll-accent-soft);
+  border-radius: 12px;
+  font-size: 17px;
+}
+
+.enroll-radio {
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  color: var(--enroll-muted);
+  border: 1px solid var(--enroll-border);
+  border-radius: 50%;
+  font-size: 21px;
+}
+
+.enroll-radio.checked {
+  color: var(--enroll-accent);
+  border: 0;
+}
+
+.enroll-course-card h3 {
+  margin: 17px 0 5px;
+  overflow-wrap: anywhere;
+  color: var(--enroll-text);
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.enroll-course-card > p {
+  margin: 0;
+  color: var(--enroll-muted);
+  font-size: 11px;
+}
+
+.enroll-course-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.enroll-course-card-bottom > span:first-child {
+  max-width: 75%;
+  overflow: hidden;
+  padding: 5px 8px;
+  color: var(--enroll-muted);
+  background: color-mix(in srgb, var(--enroll-border) 50%, transparent);
+  border-radius: 6px;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.enroll-course-arrow {
+  display: grid;
+  place-items: center;
+  color: var(--enroll-accent);
+  font-size: 12px;
+}
+
+.enroll-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 220px;
+  padding: 30px 15px;
+  text-align: center;
+  color: var(--enroll-muted);
+}
+
+.enroll-empty-state > svg {
+  color: var(--enroll-accent);
+  font-size: 29px;
+}
+
+.enroll-empty-state strong {
+  color: var(--enroll-text);
+  font-size: 15px;
+}
+
+.enroll-empty-state p {
+  max-width: 400px;
+  margin: 0 0 7px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.enroll-loader {
+  width: 27px;
+  height: 27px;
+  border: 3px solid var(--enroll-border);
+  border-top-color: var(--enroll-accent);
+  border-radius: 50%;
+  animation: enroll-rotate 0.75s linear infinite;
+}
+
+.enroll-spin {
+  animation: enroll-rotate 1s linear infinite;
+}
+
+@keyframes enroll-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.enroll-action-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  margin-bottom: 25px;
+  padding: 22px 25px;
+  background: var(--enroll-card);
+  border: 1px solid var(--enroll-border);
+  border-radius: 16px;
+}
+
+.enroll-action-copy {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 0;
+}
+
+.enroll-action-copy > div:last-child {
+  min-width: 0;
+}
+
+.enroll-action-copy p {
+  overflow-wrap: anywhere;
+}
+
+.enroll-action-panel > .enroll-primary-button {
+  flex-shrink: 0;
+}
+
+.enroll-results {
+  border-color: color-mix(in srgb, #25b879 30%, var(--enroll-border));
+}
+
+.enroll-result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  padding: 8px 11px;
+  color: #178052;
+  background: color-mix(in srgb, #25b879 10%, var(--enroll-card));
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.enroll-result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 23px;
+}
+
+.enroll-result-card {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+  padding: 19px;
+  background: var(--enroll-bg);
+  border: 1px solid var(--enroll-border);
+  border-radius: 12px;
+}
+
+.enroll-result-card > svg {
+  color: var(--enroll-accent);
+  font-size: 18px;
+}
+
+.enroll-result-card > span {
+  color: var(--enroll-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.enroll-result-card > strong {
+  color: var(--enroll-text);
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.enroll-modal-backdrop {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 20px;
+  background: rgb(12 14 26 / 60%);
+  backdrop-filter: blur(5px);
+}
+
+.enroll-confirm-modal {
+  position: relative;
+  width: min(100%, 475px);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 31px;
+  color: var(--enroll-text);
+  background: var(--enroll-card);
+  border: 1px solid var(--enroll-border);
+  border-radius: 20px;
+  box-shadow: 0 25px 90px rgb(0 0 0 / 25%);
+}
+
+.enroll-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: var(--enroll-muted);
+  background: var(--enroll-bg);
+  border: 1px solid var(--enroll-border);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.enroll-confirm-icon {
+  display: grid;
+  place-items: center;
+  width: 55px;
+  height: 55px;
+  margin-bottom: 20px;
+  color: var(--enroll-accent);
+  background: var(--enroll-accent-soft);
+  border-radius: 15px;
+  font-size: 23px;
+}
+
+.enroll-confirm-modal h2 {
+  margin: 0 35px 10px 0;
+  color: var(--enroll-text);
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.enroll-confirm-modal > p {
+  margin: 0;
+  color: var(--enroll-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.enroll-confirm-course {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  padding: 15px;
+  background: var(--enroll-accent-soft);
+  border: 1px solid color-mix(in srgb, var(--enroll-accent) 20%, var(--enroll-border));
+  border-radius: 12px;
+}
+
+.enroll-confirm-course > svg {
+  flex-shrink: 0;
+  color: var(--enroll-accent);
+}
+
+.enroll-confirm-course strong {
+  overflow-wrap: anywhere;
+  color: var(--enroll-text);
+  font-size: 13px;
+}
+
+.enroll-confirm-modal .enroll-confirm-note {
+  padding: 12px;
+  background: color-mix(in srgb, var(--enroll-border) 35%, transparent);
+  border-radius: 9px;
+  font-size: 11px;
+}
+
+.enroll-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+@media (max-width: 1100px) {
+  .enroll-all-page {
+    padding: 22px;
+  }
+
+  .enroll-stats-grid,
+  .enroll-course-grid,
+  .enroll-result-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .enroll-all-page {
+    padding: 15px;
+  }
+
+  .enroll-page-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .enroll-page-heading > .enroll-secondary-button {
+    align-self: flex-start;
+  }
+
+  .enroll-stats-grid,
+  .enroll-course-grid,
+  .enroll-result-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .enroll-workspace,
+  .enroll-results {
+    padding: 18px;
+  }
+
+  .enroll-course-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .enroll-search {
+    width: 100%;
+  }
+
+  .enroll-course-count {
+    align-self: flex-end;
+  }
+
+  .enroll-action-panel {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 19px;
+  }
+
+  .enroll-action-panel > .enroll-primary-button {
+    width: 100%;
+  }
+
+  .enroll-confirm-modal {
+    padding: 25px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enroll-all-page *,
+  .enroll-all-page *::before,
+  .enroll-all-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,154 @@
+.logout-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(6px);
+  animation: logoutFadeIn 0.2s ease;
+}
+
+.logout-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  text-align: center;
+  color: #1e293b !important;
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+  animation: logoutSlideIn 0.25s ease;
+}
+
+.logout-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  padding: 7px;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.logout-modal-close:hover {
+  color: #1e293b;
+  background: #f1f5f9;
+}
+
+.logout-modal-icon {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 20px;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 50%;
+}
+
+.logout-modal h2 {
+  margin: 0 0 12px;
+  color: #111827 !important;
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.logout-modal p {
+  margin: 0 0 8px;
+  color: #334155 !important;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.logout-modal-subtitle {
+  display: block;
+  color: #64748b !important;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.logout-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.logout-cancel-btn,
+.logout-confirm-btn {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.logout-cancel-btn {
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+}
+
+.logout-cancel-btn:hover {
+  background: #f8fafc;
+}
+
+.logout-confirm-btn {
+  color: #ffffff;
+  background: #dc2626;
+  border: 1px solid #dc2626;
+}
+
+.logout-confirm-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.logout-cancel-btn:focus-visible,
+.logout-confirm-btn:focus-visible,
+.logout-modal-close:focus-visible {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 3px;
+}
+
+@keyframes logoutFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes logoutSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .logout-modal {
+    padding: 28px 22px;
+  }
+
+  .logout-modal-actions {
+    flex-direction: column-reverse;
+  }
+}

@@ -1,0 +1,10 @@
+backend/.env
+backend/media/
+.env
+node_modules/
+dist/
+build/
+__pycache__/
+venv/
+.venv/
+*.log

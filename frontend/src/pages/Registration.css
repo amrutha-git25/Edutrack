@@ -1,0 +1,817 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+.registration-page {
+  min-height: 100vh;
+  padding: 24px 2.7%;
+  background: #f8f7ff;
+  color: #191d35;
+  font-family: 'Inter', sans-serif;
+}
+
+.registration-page *,
+.registration-page *::before,
+.registration-page *::after {
+  box-sizing: border-box;
+}
+
+.registration-header {
+  max-width: 1500px;
+  margin: 0 auto 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.registration-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #191d35;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.registration-brand-icon {
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e5e5ff;
+  color: #5747ed;
+  font-size: 19px;
+}
+
+.registration-header-login {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: #68697c;
+  font-size: 12px;
+}
+
+.registration-signin {
+  padding: 9px 15px;
+  background: #f0efff;
+  border-radius: 9px;
+  color: #4f43e6;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.registration-layout {
+  max-width: 1500px;
+  min-height: 620px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.88fr 1.22fr;
+  overflow: hidden;
+  border-radius: 19px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(35, 28, 80, 0.11);
+}
+
+.registration-promo {
+  display: flex;
+  flex-direction: column;
+  padding: 36px 32px 27px;
+  color: #fff;
+  background: linear-gradient(145deg, #6059e7 0%, #6925e7 55%, #7623df 100%);
+}
+
+.registration-pill {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 7px;
+  margin-bottom: 22px;
+  padding: 6px 11px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.15);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+.registration-promo h1 {
+  margin: 0 0 12px;
+  font-size: clamp(25px, 2.3vw, 36px);
+  line-height: 1.22;
+  letter-spacing: -1.2px;
+}
+
+.registration-promo-description {
+  max-width: 390px;
+  margin: 0 0 23px;
+  color: rgba(255, 255, 255, 0.79);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.registration-benefits {
+  display: grid;
+  gap: 10px;
+}
+
+.registration-benefit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.registration-benefit-icon {
+  display: grid;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 17px;
+}
+
+.registration-benefit div {
+  display: grid;
+  gap: 4px;
+}
+
+.registration-benefit strong {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.registration-benefit div span {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.registration-promo-art {
+  margin-top: auto;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 15px;
+  background: linear-gradient(135deg, #f9f8ff, #e8e8ff);
+  color: #24234d;
+  box-shadow: 0 10px 22px rgba(25, 13, 81, 0.18);
+}
+
+.registration-art-top {
+  display: flex;
+  justify-content: space-between;
+  color: #5b4de4;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.registration-art-top span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.registration-art-center {
+  min-height: 108px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.registration-art-icon {
+  display: grid;
+  width: 65px;
+  height: 65px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #dedbff, #b7adff);
+  color: #5142db;
+  font-size: 32px;
+}
+
+.registration-art-center strong {
+  font-size: 13px;
+}
+
+.registration-art-center p {
+  color: #77758d;
+  font-size: 10px;
+}
+
+.registration-art-monitor {
+  margin-left: auto;
+  color: #8477ed;
+  font-size: 45px;
+}
+
+.registration-live {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 9px;
+  background: #fff;
+  font-size: 9px;
+}
+
+.registration-live span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.registration-live span:last-child {
+  color: #5142db;
+  font-weight: 700;
+}
+
+.registration-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6555f0;
+}
+
+.registration-promo-footer {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 17px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.registration-promo-footer span {
+  color: #c5baff;
+}
+
+.registration-form-panel {
+  padding: 34px clamp(24px, 5.2%, 68px);
+  background: #fff;
+}
+
+.registration-form-heading {
+  margin-bottom: 24px;
+}
+
+.registration-form-heading h2 {
+  margin: 0 0 8px;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+}
+
+.registration-form-heading p {
+  margin: 0;
+  color: #727387;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.registration-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px 13px;
+}
+
+.registration-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.registration-field > span,
+.registration-role-title {
+  color: #222640;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.registration-field b,
+.registration-role-title b {
+  color: #e14b63;
+}
+
+.registration-field-full {
+  grid-column: 1 / -1;
+}
+
+.registration-input {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 43px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: #f1f2ff;
+  color: #73758d;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.registration-input:focus-within {
+  border-color: #7566ff;
+  box-shadow: 0 0 0 3px rgba(102, 83, 241, 0.1);
+}
+
+.registration-input > svg {
+  flex-shrink: 0;
+  font-size: 15px;
+}
+
+.registration-input input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #20243d;
+  font: inherit;
+  font-size: 11px;
+}
+
+.registration-input input::placeholder {
+  color: #85869a;
+  opacity: 1;
+}
+
+.registration-input input:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.registration-country-code {
+  flex-shrink: 0;
+  padding-right: 8px;
+  border-right: 1px solid #d9d9eb;
+  color: #373a54;
+  font-size: 11px;
+}
+
+.registration-eye {
+  display: grid;
+  flex-shrink: 0;
+  width: 27px;
+  height: 30px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #777990;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.registration-eye:hover {
+  color: #5142db;
+}
+
+.registration-password-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  color: #74758b;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+.registration-password-hint svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #6d5de8;
+  font-size: 14px;
+}
+
+.registration-role-section {
+  display: grid;
+  gap: 9px;
+}
+
+.registration-role-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.registration-role-card {
+  display: flex;
+  min-height: 102px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 12px 8px;
+  border: 1.5px solid transparent;
+  border-radius: 13px;
+  background: #f2f2ff;
+  color: #252943;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.registration-role-card:hover {
+  transform: translateY(-1px);
+  border-color: #b4aaff;
+}
+
+.registration-role-card.selected {
+  border-color: #5c4bff;
+  background: #eae9ff;
+  box-shadow: inset 0 0 0 1px rgba(92, 75, 255, 0.06);
+}
+
+.registration-role-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: #dedfff;
+  color: #5045e8;
+  font-size: 18px;
+}
+
+.registration-role-card.selected .registration-role-icon {
+  background: #5145e5;
+  color: #fff;
+}
+
+.registration-role-card strong {
+  font-size: 11px;
+}
+
+.registration-role-card small {
+  color: #77788d;
+  font-size: 9px;
+}
+
+.registration-terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #6d6e81;
+  font-size: 9px;
+  line-height: 1.7;
+  cursor: pointer;
+}
+
+.registration-terms input {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  margin: 2px 0 0;
+  accent-color: #5947ed;
+}
+
+.registration-terms a,
+.registration-bottom-login a {
+  color: #5144e7;
+  text-decoration: none;
+}
+
+.registration-terms a:hover,
+.registration-bottom-login a:hover {
+  text-decoration: underline;
+}
+
+.registration-alert {
+  padding: 11px 13px;
+  border-radius: 9px;
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.registration-alert-error {
+  border: 1px solid #ffd2d6;
+  background: #fff1f2;
+  color: #b42336;
+}
+
+.registration-alert-success {
+  border: 1px solid #c7eed6;
+  background: #edfff3;
+  color: #197342;
+}
+
+.registration-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 45px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 11px;
+  background: linear-gradient(110deg, #5049df, #7929e8);
+  color: #fff;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 5px 10px rgba(83, 66, 207, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.registration-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(83, 66, 207, 0.27);
+}
+
+.registration-submit:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.registration-spinner {
+  animation: registration-spin 1s linear infinite;
+}
+
+@keyframes registration-spin {
+  to { transform: rotate(360deg); }
+}
+
+.registration-otp-panel {
+  display: grid;
+  gap: 13px;
+  padding: 17px;
+  border: 1px solid #e4e0ff;
+  border-radius: 13px;
+  background: #fbfaff;
+}
+
+.registration-otp-panel h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.registration-otp-panel p {
+  margin: -6px 0 0;
+  color: #74758b;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.registration-resend {
+  padding: 5px;
+  border: 0;
+  background: transparent;
+  color: #5545e5;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.registration-verified-panel {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 13px;
+  border: 1px solid #c7eed6;
+  border-radius: 9px;
+  background: #edfff3;
+  color: #197342;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.registration-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #7c7d91;
+}
+
+.registration-divider span {
+  height: 1px;
+  flex: 1;
+  background: #e9e8f2;
+}
+
+.registration-divider small {
+  white-space: nowrap;
+  font-size: 9px;
+}
+
+.registration-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 43px;
+  border: 0;
+  border-radius: 10px;
+  background: #f1f2ff;
+  color: #20243d;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.registration-google:hover {
+  background: #e8e8ff;
+}
+
+.registration-google-g {
+  color: #4285f4;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.registration-bottom-login {
+  margin: 1px 0 0;
+  color: #74758b;
+  text-align: center;
+  font-size: 10px;
+}
+
+.registration-bottom-login a {
+  font-weight: 600;
+}
+
+.registration-trust {
+  max-width: 1500px;
+  margin: 22px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.registration-trust > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #f0efff;
+}
+
+.registration-trust > div > svg {
+  flex-shrink: 0;
+  display: grid;
+  width: 33px;
+  height: 33px;
+  padding: 8px;
+  border-radius: 9px;
+  background: #dedfff;
+  color: #5548e6;
+  font-size: 17px;
+}
+
+.registration-trust span {
+  display: grid;
+  gap: 4px;
+}
+
+.registration-trust strong {
+  font-size: 10px;
+}
+
+.registration-trust small {
+  color: #74758b;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+@media (min-width: 1500px) {
+  .registration-layout {
+    min-height: 760px;
+  }
+
+  .registration-promo {
+    padding: 48px 42px 30px;
+  }
+
+  .registration-form-panel {
+    padding-top: 48px;
+    padding-bottom: 40px;
+  }
+
+  .registration-form {
+    gap: 20px;
+  }
+
+  .registration-field-grid {
+    gap: 19px 15px;
+  }
+
+  .registration-input {
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 900px) {
+  .registration-page {
+    padding: 20px;
+  }
+
+  .registration-layout {
+    grid-template-columns: 0.8fr 1.2fr;
+  }
+
+  .registration-promo {
+    padding: 28px 22px;
+  }
+
+  .registration-form-panel {
+    padding: 28px 24px;
+  }
+
+  .registration-promo-art {
+    margin-top: 30px;
+  }
+
+  .registration-trust {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .registration-page {
+    padding: 15px;
+  }
+
+  .registration-header {
+    margin-bottom: 16px;
+  }
+
+  .registration-header-login > span {
+    display: none;
+  }
+
+  .registration-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .registration-promo {
+    padding: 25px 22px;
+  }
+
+  .registration-promo h1 {
+    font-size: 27px;
+  }
+
+  .registration-benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .registration-promo-art {
+    margin-top: 24px;
+  }
+
+  .registration-form-panel {
+    padding: 27px 20px;
+  }
+
+  .registration-form-heading h2 {
+    font-size: 22px;
+  }
+
+  .registration-trust {
+    gap: 8px;
+  }
+
+  .registration-trust > div {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .registration-field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .registration-field-full {
+    grid-column: auto;
+  }
+
+  .registration-role-card {
+    min-height: 95px;
+  }
+
+  .registration-trust {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.registration-promo h1 {
+  color: #ffffff !important;
+}

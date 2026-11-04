@@ -1,0 +1,1070 @@
+/* =========================================================
+   EDUTrack — CHAT WITH USER
+   High-contrast Light, Dark & Yellow themes
+   Compatible with existing ChatWithUser.jsx class names
+========================================================= */
+
+/* ---------- LIGHT THEME (DEFAULT) ---------- */
+.educhat-page {
+  --chat-page-bg: #f7f8fc;
+  --chat-surface: #ffffff;
+  --chat-surface-secondary: #f1f3f9;
+  --chat-input-bg: #ffffff;
+  --chat-hover: #f0edff;
+  --chat-border: #dfe3ec;
+
+  --chat-text: #20243a;
+  --chat-text-secondary: #555d73;
+  --chat-placeholder: #697187;
+
+  --chat-accent: #6545dc;
+  --chat-accent-hover: #5032c2;
+  --chat-accent-text: #ffffff;
+
+  --chat-incoming-bg: #ffffff;
+  --chat-incoming-text: #20243a;
+  --chat-incoming-time: #626a7e;
+
+  --chat-outgoing-bg: #6545dc;
+  --chat-outgoing-text: #ffffff;
+  --chat-outgoing-time: #f0eaff;
+
+  --chat-focus: rgba(101, 69, 220, 0.2);
+  --chat-shadow: 0 12px 35px rgba(35, 37, 70, 0.07);
+
+  width: 100%;
+  min-width: 0;
+  color: var(--chat-text);
+  background: var(--chat-page-bg);
+  color-scheme: light;
+  font-family: inherit;
+}
+
+.educhat-page *,
+.educhat-page *::before,
+.educhat-page *::after {
+  box-sizing: border-box;
+}
+
+/* ---------- DARK THEME ---------- */
+html[data-admin-theme="dark"] .educhat-page {
+  --chat-page-bg: #10121b;
+  --chat-surface: #191c29;
+  --chat-surface-secondary: #25293a;
+  --chat-input-bg: #151825;
+  --chat-hover: #292640;
+  --chat-border: #35394d;
+
+  --chat-text: #f4f5ff;
+  --chat-text-secondary: #c0c5d8;
+  --chat-placeholder: #a9b0c7;
+
+  --chat-accent: #a995ff;
+  --chat-accent-hover: #8d75f5;
+  --chat-accent-text: #171127;
+
+  --chat-incoming-bg: #25293a;
+  --chat-incoming-text: #f4f5ff;
+  --chat-incoming-time: #c0c5d8;
+
+  --chat-outgoing-bg: #7659e8;
+  --chat-outgoing-text: #ffffff;
+  --chat-outgoing-time: #f1edff;
+
+  --chat-focus: rgba(169, 149, 255, 0.28);
+  --chat-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+
+  color-scheme: dark;
+}
+
+/* ---------- YELLOW THEME ---------- */
+html[data-admin-theme="yellow"] .educhat-page {
+  --chat-page-bg: #fffbea;
+  --chat-surface: #ffffff;
+  --chat-surface-secondary: #fff2bd;
+  --chat-input-bg: #ffffff;
+  --chat-hover: #fff4c9;
+  --chat-border: #e5d59a;
+
+  --chat-text: #302608;
+  --chat-text-secondary: #5f4b16;
+  --chat-placeholder: #74612b;
+
+  --chat-accent: #785300;
+  --chat-accent-hover: #5e4000;
+  --chat-accent-text: #ffffff;
+
+  --chat-incoming-bg: #ffffff;
+  --chat-incoming-text: #302608;
+  --chat-incoming-time: #6b5828;
+
+  --chat-outgoing-bg: #785300;
+  --chat-outgoing-text: #ffffff;
+  --chat-outgoing-time: #fff1c5;
+
+  --chat-focus: rgba(120, 83, 0, 0.22);
+  --chat-shadow: 0 12px 35px rgba(94, 64, 0, 0.08);
+
+  color-scheme: light;
+}
+
+/* ---------- PAGE HEADING ---------- */
+.educhat-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.educhat-eyebrow {
+  margin-bottom: 7px;
+  color: var(--chat-accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+}
+
+.educhat-heading h1 {
+  margin: 0;
+  color: var(--chat-text);
+  font-size: clamp(24px, 3vw, 31px);
+  letter-spacing: -0.7px;
+  font-weight: 800;
+}
+
+.educhat-heading p {
+  margin: 8px 0 0;
+  color: var(--chat-text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.educhat-refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 11px 15px;
+  border: 1px solid var(--chat-accent);
+  border-radius: 11px;
+  background: var(--chat-accent);
+  color: var(--chat-accent-text);
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.educhat-refresh:hover {
+  background: var(--chat-accent-hover);
+  border-color: var(--chat-accent-hover);
+}
+
+.educhat-refresh:active {
+  transform: scale(0.98);
+}
+
+/* ---------- MAIN CHAT CONTAINER ---------- */
+.educhat-shell {
+  display: grid;
+  grid-template-columns: minmax(270px, 330px) minmax(0, 1fr);
+  height: min(720px, calc(100vh - 225px));
+  min-height: 490px;
+  overflow: hidden;
+  border: 1px solid var(--chat-border);
+  border-radius: 20px;
+  background: var(--chat-surface);
+  box-shadow: var(--chat-shadow);
+}
+
+.educhat-sidebar {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--chat-border);
+  background: var(--chat-surface);
+  color: var(--chat-text);
+}
+
+.educhat-sidebar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 20px 17px;
+  background: var(--chat-surface);
+}
+
+.educhat-sidebar-top h2 {
+  margin: 0 0 5px;
+  color: var(--chat-text);
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.educhat-sidebar-top > div > span {
+  color: var(--chat-text-secondary);
+  font-size: 12px;
+}
+
+.educhat-message-icon,
+.educhat-welcome-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--chat-accent);
+  background: var(--chat-hover);
+}
+
+.educhat-message-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  font-size: 17px;
+}
+
+/* ---------- SEARCH FIELD ---------- */
+.educhat-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin: 0 15px 18px;
+  padding: 0 13px;
+  border: 1px solid var(--chat-border);
+  border-radius: 11px;
+  background: var(--chat-input-bg);
+  color: var(--chat-text-secondary);
+}
+
+.educhat-search:focus-within {
+  border-color: var(--chat-accent);
+  box-shadow: 0 0 0 3px var(--chat-focus);
+}
+
+.educhat-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--chat-text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.educhat-search input::placeholder {
+  color: var(--chat-placeholder);
+  opacity: 1;
+}
+
+/* ---------- SECTION LABELS ---------- */
+.educhat-section-label {
+  padding: 0 20px 10px;
+  color: var(--chat-text-secondary);
+  font-size: 11px;
+  letter-spacing: 1.1px;
+  font-weight: 800;
+}
+
+.educhat-conversation-label {
+  padding-top: 2px;
+}
+
+/* ---------- USER SEARCH RESULTS ---------- */
+.educhat-search-results {
+  max-height: 215px;
+  overflow-y: auto;
+  padding-bottom: 12px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--chat-border);
+  background: var(--chat-surface);
+}
+
+.educhat-user-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: calc(100% - 20px);
+  margin: 2px 10px;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--chat-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.educhat-user-result:hover {
+  background: var(--chat-hover);
+  border-color: var(--chat-border);
+}
+
+.educhat-user-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 4px;
+}
+
+.educhat-user-details strong,
+.educhat-user-details small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.educhat-user-details strong {
+  color: var(--chat-text);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.educhat-user-details small {
+  color: var(--chat-text-secondary);
+  font-size: 12px;
+}
+
+.educhat-add-icon {
+  flex-shrink: 0;
+  color: var(--chat-accent);
+  font-size: 13px;
+}
+
+.educhat-muted {
+  margin: 0;
+  padding: 8px 20px;
+  color: var(--chat-text-secondary);
+  font-size: 13px;
+}
+
+/* ---------- AVATARS ---------- */
+.educhat-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 43px;
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #8d75ff, #6044d8);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+/* ---------- CONVERSATION LIST ---------- */
+.educhat-conversation-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 8px 12px;
+  background: var(--chat-surface);
+}
+
+.educhat-conversation {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  margin-bottom: 3px;
+  padding: 12px 10px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  background: transparent;
+  color: var(--chat-text);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.educhat-conversation:hover {
+  background: var(--chat-hover);
+}
+
+.educhat-conversation.is-active {
+  background: var(--chat-surface-secondary);
+  border-color: var(--chat-border);
+}
+
+.educhat-conversation-copy {
+  display: block;
+  flex: 1;
+  min-width: 0;
+}
+
+.educhat-conversation-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.educhat-conversation-line strong {
+  overflow: hidden;
+  color: var(--chat-text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.educhat-conversation-line small {
+  flex: 0 0 auto;
+  color: var(--chat-text-secondary);
+  font-size: 11px;
+}
+
+.educhat-last-message {
+  display: block;
+  overflow: hidden;
+  color: var(--chat-text-secondary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+
+.educhat-unread {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  min-width: 21px;
+  height: 21px;
+  padding: 0 5px;
+  border-radius: 20px;
+  background: var(--chat-accent);
+  color: var(--chat-accent-text);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* ---------- CHAT MAIN PANEL ---------- */
+.educhat-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--chat-page-bg);
+  color: var(--chat-text);
+}
+
+.educhat-chat-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 83px;
+  padding: 15px 22px;
+  border-bottom: 1px solid var(--chat-border);
+  background: var(--chat-surface);
+}
+
+.educhat-avatar-large {
+  width: 46px;
+  height: 46px;
+  flex-basis: 46px;
+}
+
+.educhat-chat-person {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  gap: 5px;
+}
+
+.educhat-chat-person strong {
+  overflow: hidden;
+  color: var(--chat-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.educhat-chat-person span {
+  overflow: hidden;
+  color: var(--chat-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.educhat-call-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.educhat-call-actions button {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  border: 1px solid var(--chat-border);
+  border-radius: 12px;
+  background: var(--chat-surface-secondary);
+  color: var(--chat-text);
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.educhat-call-actions button:hover {
+  background: var(--chat-accent);
+  color: var(--chat-accent-text);
+  border-color: var(--chat-accent);
+}
+
+.educhat-back {
+  display: none;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--chat-border);
+  border-radius: 10px;
+  background: var(--chat-surface-secondary);
+  color: var(--chat-text);
+  cursor: pointer;
+}
+
+.educhat-back:hover {
+  background: var(--chat-hover);
+}
+
+/* ---------- MESSAGE DIVIDER ---------- */
+.educhat-date-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 23px 4px;
+  background: var(--chat-page-bg);
+  color: var(--chat-text-secondary);
+  font-size: 11px;
+  letter-spacing: 1.1px;
+  font-weight: 800;
+}
+
+.educhat-date-divider::before,
+.educhat-date-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--chat-border);
+}
+
+/* ---------- MESSAGE HISTORY ---------- */
+.educhat-messages {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 15px;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 22px clamp(14px, 3vw, 34px);
+  background: var(--chat-page-bg);
+  color: var(--chat-text);
+}
+
+.educhat-message-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 85%;
+}
+
+.educhat-message-row.mine {
+  align-self: flex-end;
+  justify-content: flex-end;
+}
+
+.educhat-message-row.theirs {
+  align-self: flex-start;
+}
+
+.educhat-small-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 27px;
+  width: 27px;
+  height: 27px;
+  color: var(--chat-text-secondary);
+  font-size: 25px;
+}
+
+.educhat-bubble {
+  max-width: 100%;
+  padding: 11px 14px 8px;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--chat-border);
+  border-radius: 15px 15px 15px 4px;
+  background: var(--chat-incoming-bg);
+  color: var(--chat-incoming-text);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.025);
+}
+
+.educhat-message-row.theirs .educhat-bubble p {
+  color: var(--chat-incoming-text);
+}
+
+.educhat-message-row.theirs .educhat-bubble > span {
+  color: var(--chat-incoming-time);
+}
+
+.educhat-message-row.mine .educhat-bubble {
+  border-color: var(--chat-outgoing-bg);
+  border-radius: 15px 15px 4px 15px;
+  background: var(--chat-outgoing-bg);
+  color: var(--chat-outgoing-text);
+}
+
+.educhat-bubble p {
+  margin: 0;
+  color: inherit;
+  white-space: pre-wrap;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.educhat-bubble > span {
+  display: block;
+  margin-top: 6px;
+  color: var(--chat-incoming-time);
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.educhat-message-row.mine .educhat-bubble p {
+  color: var(--chat-outgoing-text);
+}
+
+.educhat-message-row.mine .educhat-bubble > span {
+  color: var(--chat-outgoing-time);
+}
+
+/* ---------- MESSAGE COMPOSER ---------- */
+.educhat-composer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 18px 18px;
+  padding: 9px;
+  border: 1px solid var(--chat-border);
+  border-radius: 15px;
+  background: var(--chat-surface);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.035);
+}
+
+.educhat-composer:focus-within {
+  border-color: var(--chat-accent);
+  box-shadow: 0 0 0 3px var(--chat-focus);
+}
+
+.educhat-composer input {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+  padding: 10px 6px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--chat-text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.educhat-composer input::placeholder {
+  color: var(--chat-placeholder);
+  opacity: 1;
+}
+
+.educhat-character-count {
+  color: var(--chat-text-secondary);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.educhat-composer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 41px;
+  padding: 0 15px;
+  border: 1px solid var(--chat-accent);
+  border-radius: 11px;
+  background: var(--chat-accent);
+  color: var(--chat-accent-text);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.educhat-composer button:hover:not(:disabled) {
+  background: var(--chat-accent-hover);
+  border-color: var(--chat-accent-hover);
+  transform: translateY(-1px);
+}
+
+.educhat-composer button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ---------- LOADING & EMPTY STATES ---------- */
+.educhat-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  min-height: 120px;
+  padding: 25px;
+  color: var(--chat-text-secondary);
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.educhat-empty > svg {
+  color: var(--chat-accent);
+  font-size: 25px;
+}
+
+.educhat-empty strong {
+  color: var(--chat-text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.educhat-first-message {
+  flex: 1;
+}
+
+.educhat-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--chat-border);
+  border-top-color: var(--chat-accent);
+  border-radius: 50%;
+  animation: educhat-spin 0.8s linear infinite;
+}
+
+@keyframes educhat-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- WELCOME / NO CHAT SELECTED ---------- */
+.educhat-welcome {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background: var(--chat-page-bg);
+  color: var(--chat-text);
+  text-align: center;
+}
+
+.educhat-welcome-icon {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 20px;
+  border-radius: 24px;
+  background: var(--chat-hover);
+  color: var(--chat-accent);
+  font-size: 30px;
+}
+
+.educhat-welcome h2 {
+  margin: 0;
+  color: var(--chat-text);
+  font-size: clamp(19px, 2vw, 25px);
+  letter-spacing: -0.4px;
+  font-weight: 800;
+}
+
+.educhat-welcome > p {
+  max-width: 380px;
+  margin: 11px 0 25px;
+  color: var(--chat-text-secondary);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.educhat-welcome-features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+}
+
+.educhat-welcome-features span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border: 1px solid var(--chat-border);
+  border-radius: 10px;
+  background: var(--chat-surface);
+  color: var(--chat-text);
+  font-size: 12px;
+}
+
+.educhat-welcome-features svg {
+  color: var(--chat-accent);
+}
+
+/* ---------- ERROR & INFORMATION ALERTS ---------- */
+.educhat-alert {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border: 1px solid;
+  border-radius: 11px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.educhat-alert button {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 21px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.educhat-alert-error {
+  border-color: #e9a5aa;
+  background: #fff0f1;
+  color: #8f1825;
+}
+
+.educhat-alert-info {
+  border-color: #b8a9f4;
+  background: #f2efff;
+  color: #40278b;
+}
+
+html[data-admin-theme="dark"] .educhat-alert-error {
+  border-color: #80414a;
+  background: #351e25;
+  color: #ffd9de;
+}
+
+html[data-admin-theme="dark"] .educhat-alert-info {
+  border-color: #65539b;
+  background: #29223e;
+  color: #e7deff;
+}
+
+html[data-admin-theme="yellow"] .educhat-alert-error {
+  border-color: #e6a0a0;
+  background: #fff0ee;
+  color: #861f18;
+}
+
+html[data-admin-theme="yellow"] .educhat-alert-info {
+  border-color: #d9bd63;
+  background: #fff4c9;
+  color: #513700;
+}
+
+/* ---------- ACCESSIBILITY & FOCUS ---------- */
+.educhat-page button:focus-visible,
+.educhat-page input:focus-visible {
+  outline: 2px solid var(--chat-accent);
+  outline-offset: 3px;
+}
+
+.educhat-page button:disabled {
+  cursor: not-allowed;
+}
+
+.educhat-page ::selection {
+  background: var(--chat-accent);
+  color: var(--chat-accent-text);
+}
+
+/* ---------- SCROLLBARS ---------- */
+.educhat-page * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--chat-border) transparent;
+}
+
+.educhat-page *::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.educhat-page *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.educhat-page *::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: var(--chat-border);
+}
+
+/* ---------- TABLET ---------- */
+@media (max-width: 900px) {
+  .educhat-shell {
+    grid-template-columns: minmax(245px, 290px) minmax(0, 1fr);
+  }
+
+  .educhat-conversation {
+    gap: 8px;
+    padding: 10px 7px;
+  }
+
+  .educhat-chat-header {
+    padding: 13px;
+  }
+
+  .educhat-message-row {
+    max-width: 92%;
+  }
+}
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 650px) {
+  .educhat-heading {
+    align-items: flex-start;
+  }
+
+  .educhat-heading p {
+    max-width: 270px;
+  }
+
+  .educhat-refresh {
+    padding: 10px;
+  }
+
+  .educhat-refresh span {
+    display: none;
+  }
+
+  .educhat-shell {
+    position: relative;
+    display: block;
+    height: calc(100dvh - 235px);
+    min-height: 470px;
+  }
+
+  .educhat-sidebar {
+    height: 100%;
+    border-right: 0;
+  }
+
+  .educhat-sidebar.educhat-mobile-hidden {
+    display: none;
+  }
+
+  .educhat-main {
+    display: none;
+    height: 100%;
+  }
+
+  .educhat-main.educhat-main-mobile-open {
+    display: flex;
+  }
+
+  .educhat-back {
+    display: grid;
+  }
+
+  .educhat-chat-header {
+    gap: 9px;
+    min-height: 73px;
+    padding: 11px;
+  }
+
+  .educhat-avatar-large {
+    width: 39px;
+    height: 39px;
+    flex-basis: 39px;
+  }
+
+  .educhat-chat-person strong {
+    font-size: 13px;
+  }
+
+  .educhat-chat-person span {
+    font-size: 11px;
+  }
+
+  .educhat-call-actions {
+    gap: 5px;
+  }
+
+  .educhat-call-actions button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .educhat-message-row {
+    max-width: 96%;
+  }
+
+  .educhat-bubble p {
+    font-size: 13px;
+  }
+
+  .educhat-composer {
+    gap: 6px;
+    margin: 8px;
+    padding: 7px;
+  }
+
+  .educhat-composer input {
+    font-size: 13px;
+  }
+
+  .educhat-composer button {
+    gap: 6px;
+    padding: 0 11px;
+  }
+
+  .educhat-character-count {
+    display: none;
+  }
+
+  .educhat-welcome {
+    padding: 20px;
+  }
+
+  .educhat-welcome-features {
+    gap: 7px;
+  }
+}
+
+/* ---------- REDUCED MOTION ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .educhat-page *,
+  .educhat-page *::before,
+  .educhat-page *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,955 @@
+
+.lc-page {
+  --lc-bg: var(--admin-bg, #f5f6fb);
+  --lc-card: var(--admin-card, #ffffff);
+  --lc-text: var(--admin-text, #24213a);
+  --lc-muted: var(--admin-muted, #77768c);
+  --lc-border: var(--admin-border, #e8e7f0);
+  --lc-accent: var(--admin-primary, #7655e8);
+  color: var(--lc-text);
+  width: 100%;
+  min-width: 0;
+  padding: 4px 0 28px;
+}
+
+.admin-shell[data-theme="dark"] .lc-page {
+  --lc-bg: #171625;
+  --lc-card: #211f32;
+  --lc-text: #f6f4ff;
+  --lc-muted: #aaa7c0;
+  --lc-border: #39354f;
+  --lc-accent: #a28bff;
+}
+
+.admin-shell[data-theme="yellow"] .lc-page {
+  --lc-bg: #fff9e9;
+  --lc-card: #ffffff;
+  --lc-text: #302814;
+  --lc-muted: #716342;
+  --lc-border: #eadcb6;
+  --lc-accent: #775400;
+}
+
+.lc-page * {
+  box-sizing: border-box;
+}
+
+.lc-heading,
+.lc-panel-heading,
+.lc-modal-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.lc-heading {
+  margin-bottom: 26px;
+}
+
+.lc-eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--lc-accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+}
+
+.lc-heading h1 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.lc-heading p,
+.lc-panel-heading p,
+.lc-modal-heading p {
+  margin: 8px 0 0;
+  color: var(--lc-muted);
+  font-size: 14px;
+}
+
+.lc-primary,
+.lc-secondary {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.lc-primary {
+  border: 1px solid var(--lc-accent);
+  background: var(--lc-accent);
+  color: #fff;
+}
+
+.admin-shell[data-theme="dark"] .lc-primary {
+  color: #171126;
+}
+
+.admin-shell[data-theme="yellow"] .lc-primary {
+  color: #fff;
+}
+
+.lc-secondary {
+  border: 1px solid var(--lc-border);
+  background: var(--lc-card);
+  color: var(--lc-text);
+}
+
+.lc-primary:hover,
+.lc-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.lc-primary:disabled,
+.lc-secondary:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.lc-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.lc-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--lc-border);
+  border-radius: 15px;
+  background: var(--lc-card);
+  box-shadow: 0 5px 20px rgb(30 25 70 / 3%);
+}
+
+.lc-stat-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--lc-accent) 13%, transparent);
+  color: var(--lc-accent);
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.lc-stat-card p {
+  margin: 0 0 6px;
+  color: var(--lc-muted);
+  font-size: 12px;
+}
+
+.lc-stat-card strong {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.lc-panel {
+  overflow: hidden;
+  border: 1px solid var(--lc-border);
+  border-radius: 16px;
+  background: var(--lc-card);
+  box-shadow: 0 5px 22px rgb(30 25 70 / 3%);
+}
+
+.lc-panel-heading {
+  padding: 22px 22px 18px;
+}
+
+.lc-panel-heading h2,
+.lc-modal-heading h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.lc-toolbar {
+  display: flex;
+  gap: 12px;
+  padding: 0 22px 20px;
+}
+
+.lc-search {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 10px;
+  min-width: 0;
+  padding: 0 13px;
+  border: 1px solid var(--lc-border);
+  border-radius: 10px;
+  color: var(--lc-muted);
+}
+
+.lc-search span {
+  font-size: 23px;
+}
+
+.lc-search input {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--lc-text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.lc-toolbar select,
+.lc-field input,
+.lc-field textarea,
+.lc-field select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--lc-border);
+  border-radius: 9px;
+  outline: none;
+  background: var(--lc-card);
+  color: var(--lc-text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.lc-toolbar select {
+  width: 170px;
+  padding: 0 12px;
+}
+
+.lc-field input,
+.lc-field textarea,
+.lc-field select {
+  padding: 11px 12px;
+}
+
+.lc-search:focus-within,
+.lc-toolbar select:focus,
+.lc-field input:focus,
+.lc-field textarea:focus,
+.lc-field select:focus {
+  border-color: var(--lc-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--lc-accent) 14%, transparent);
+}
+
+.lc-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.lc-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.lc-table th {
+  padding: 13px 16px;
+  border-top: 1px solid var(--lc-border);
+  border-bottom: 1px solid var(--lc-border);
+  background: color-mix(in srgb, var(--lc-bg) 70%, var(--lc-card));
+  color: var(--lc-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.lc-table th:first-child,
+.lc-table td:first-child {
+  padding-left: 22px;
+}
+
+.lc-table td {
+  padding: 17px 16px;
+  border-bottom: 1px solid var(--lc-border);
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.lc-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.lc-table tbody tr:hover {
+  background: color-mix(in srgb, var(--lc-accent) 4%, transparent);
+}
+
+.lc-class-name {
+  max-width: 230px;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 750;
+  text-overflow: ellipsis;
+}
+
+.lc-subtext {
+  margin-top: 5px;
+  color: var(--lc-muted);
+  font-size: 11px;
+}
+
+.lc-status {
+  display: inline-block;
+  padding: 6px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.lc-status-scheduled {
+  background: #fff1cc;
+  color: #825400;
+}
+
+.lc-status-live {
+  background: #d7f8e8;
+  color: #087545;
+}
+
+.lc-status-completed {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.lc-status-cancelled {
+  background: #ffe1e1;
+  color: #a51e1e;
+}
+
+.lc-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.lc-actions button,
+.lc-actions a {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--lc-accent);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.lc-actions .lc-delete {
+  color: #d64747;
+}
+
+.lc-empty {
+  padding: 45px 20px !important;
+  color: var(--lc-muted);
+  text-align: center;
+  white-space: normal;
+}
+
+.lc-empty-icon {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 30px;
+}
+
+.lc-empty strong {
+  display: block;
+  color: var(--lc-text);
+  font-size: 15px;
+}
+
+.lc-empty p {
+  margin-bottom: 0;
+  font-size: 12px;
+}
+
+.lc-table-footer {
+  padding: 15px 22px;
+  border-top: 1px solid var(--lc-border);
+  color: var(--lc-muted);
+  font-size: 11px;
+}
+
+.lc-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 15px;
+  border: 1px solid var(--lc-border);
+  border-radius: 10px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.lc-alert button {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.lc-alert-error {
+  border-color: #e7aaaa;
+  background: #fff0f0;
+  color: #9c2424;
+}
+
+.lc-alert-success {
+  border-color: #a8dec0;
+  background: #edfff4;
+  color: #12663a;
+}
+
+.lc-modal-backdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  overflow-y: auto;
+  background: rgb(13 10 28 / 65%);
+}
+
+.lc-modal {
+  width: min(650px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 25px;
+  border: 1px solid var(--lc-border);
+  border-radius: 17px;
+  background: var(--lc-card);
+  color: var(--lc-text);
+  box-shadow: 0 25px 80px rgb(0 0 0 / 25%);
+}
+
+.lc-modal-heading {
+  align-items: flex-start;
+  margin-bottom: 23px;
+}
+
+.lc-close {
+  width: 35px;
+  height: 35px;
+  border: 1px solid var(--lc-border);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--lc-text);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.lc-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.lc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  color: var(--lc-text);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.lc-field-full {
+  grid-column: 1 / -1;
+}
+
+.lc-field small {
+  color: var(--lc-muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.lc-field textarea {
+  resize: vertical;
+}
+
+.lc-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--lc-border);
+}
+
+@media (max-width: 1050px) {
+  .lc-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .lc-heading,
+  .lc-panel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .lc-heading .lc-primary {
+    width: 100%;
+  }
+
+  .lc-toolbar {
+    flex-direction: column;
+  }
+
+  .lc-toolbar select {
+    width: 100%;
+    min-height: 42px;
+  }
+
+  .lc-stats {
+    gap: 10px;
+  }
+
+  .lc-stat-card {
+    gap: 10px;
+    padding: 13px;
+  }
+
+  .lc-stat-icon {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  .lc-stat-card strong {
+    font-size: 22px;
+  }
+
+  .lc-stat-card p {
+    font-size: 11px;
+  }
+
+  .lc-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lc-field-full {
+    grid-column: auto;
+  }
+
+  .lc-modal {
+    padding: 18px;
+  }
+}
+/* =========================================
+   LIVE CLASSES — DARK THEME AND ACTIONS
+   Append this block to LiveClasses.css
+   ========================================= */
+
+/* Fix dark theme heading and panel titles */
+.admin-shell[data-theme="dark"] .lc-page .lc-heading h1,
+.admin-shell[data-theme="dark"] .lc-page .lc-panel-heading h2,
+.admin-shell[data-theme="dark"] .lc-page .lc-modal-heading h2 {
+  color: #ffffff !important;
+}
+
+.admin-shell[data-theme="dark"] .lc-page .lc-heading p,
+.admin-shell[data-theme="dark"] .lc-page .lc-panel-heading p,
+.admin-shell[data-theme="dark"] .lc-page .lc-modal-heading p {
+  color: #c4c0d8 !important;
+}
+
+/* Keep the table text readable in dark mode */
+.admin-shell[data-theme="dark"] .lc-page .lc-table td {
+  color: #f1efff;
+}
+
+.admin-shell[data-theme="dark"] .lc-page .lc-table .lc-class-name {
+  color: #ffffff;
+}
+
+.admin-shell[data-theme="dark"] .lc-page .lc-table .lc-subtext {
+  color: #b7b2d0;
+}
+
+.admin-shell[data-theme="dark"] .lc-page .lc-table th {
+  color: #c7c1e3;
+  background: #29263d;
+}
+
+/* More legible status labels */
+.lc-page .lc-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 27px;
+  padding: 6px 11px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.lc-page .lc-status-scheduled {
+  color: #875600;
+  background: #fff0c2;
+  border-color: #f5d77c;
+}
+
+.lc-page .lc-status-live {
+  color: #087443;
+  background: #d8fbe8;
+  border-color: #93e8b8;
+}
+
+.lc-page .lc-status-completed {
+  color: #465168;
+  background: #e8edf4;
+  border-color: #cbd5e1;
+}
+
+.lc-page .lc-status-cancelled {
+  color: #a52525;
+  background: #ffe6e6;
+  border-color: #f4b4b4;
+}
+
+.lc-live-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: #0baf65;
+  box-shadow: 0 0 0 3px rgb(11 175 101 / 14%);
+  animation: lc-live-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes lc-live-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgb(11 175 101 / 14%);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgb(11 175 101 / 5%);
+  }
+}
+
+/* Modern action button layout */
+.lc-page .lc-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-width: 190px;
+}
+
+.lc-page .lc-actions button,
+.lc-page .lc-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 31px;
+  padding: 7px 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.lc-page .lc-actions button:hover,
+.lc-page .lc-actions a:hover {
+  transform: translateY(-1px);
+}
+
+.lc-page .lc-actions button:focus-visible,
+.lc-page .lc-actions a:focus-visible {
+  outline: 2px solid var(--lc-accent);
+  outline-offset: 2px;
+}
+
+/* Join Class — prominent action only when live */
+.lc-page .lc-actions .lc-action-join {
+  color: #ffffff;
+  background: #087c4c;
+  border-color: #087c4c;
+  box-shadow: 0 3px 9px rgb(8 124 76 / 15%);
+}
+
+.lc-page .lc-actions .lc-action-join:hover {
+  background: #06643d;
+  border-color: #06643d;
+}
+
+/* Edit */
+.lc-page .lc-actions .lc-action-edit {
+  color: var(--lc-accent);
+  background: color-mix(in srgb, var(--lc-accent) 9%, transparent);
+  border-color: color-mix(in srgb, var(--lc-accent) 22%, transparent);
+}
+
+.lc-page .lc-actions .lc-action-edit:hover {
+  background: color-mix(in srgb, var(--lc-accent) 16%, transparent);
+}
+
+/* Cancel */
+.lc-page .lc-actions .lc-action-cancel {
+  color: #b56a00;
+  background: #fff6df;
+  border-color: #f2d59a;
+}
+
+.lc-page .lc-actions .lc-action-cancel:hover {
+  background: #ffedc2;
+}
+
+/* Delete */
+.lc-page .lc-actions .lc-action-delete {
+  color: #c52f3c;
+  background: #fff0f1;
+  border-color: #f5c5c9;
+}
+
+.lc-page .lc-actions .lc-action-delete:hover {
+  background: #ffe0e3;
+}
+
+.admin-shell[data-theme="dark"] .lc-page .lc-actions .lc-action-join {
+  color: #ffffff;
+  background: #087c4c;
+  border-color: #15965f;
+}
+
+.admin-shell[data-theme="dark"] .lc-page .lc-actions .lc-action-edit {
+  color: #c4b5fd;
+  background: rgb(167 139 250 / 12%);
+  border-color: rgb(167 139 250 / 28%);
+}
+
+.admin-shell[data-theme="dark"] .lc-page .lc-actions .lc-action-cancel {
+  color: #ffd58a;
+  background: rgb(245 158 11 / 12%);
+  border-color: rgb(245 158 11 / 30%);
+}
+
+.admin-shell[data-theme="dark"] .lc-page .lc-actions .lc-action-delete {
+  color: #ffaaaa;
+  background: rgb(239 68 68 / 12%);
+  border-color: rgb(239 68 68 / 30%);
+}
+
+/* Schedule time helper text */
+.lc-page .lc-table td .lc-subtext {
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+/* Refresh animation */
+.lc-spin {
+  animation: lc-spin 0.8s linear infinite;
+}
+
+@keyframes lc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal fields remain readable in dark mode */
+.admin-shell[data-theme="dark"] .lc-page .lc-field input,
+.admin-shell[data-theme="dark"] .lc-page .lc-field textarea,
+.admin-shell[data-theme="dark"] .lc-page .lc-field select,
+.admin-shell[data-theme="dark"] .lc-page .lc-toolbar select {
+  color: #f6f4ff;
+  background-color: #211f32;
+  border-color: #49435f;
+}
+
+.admin-shell[data-theme="dark"] .lc-page .lc-field input::placeholder,
+.admin-shell[data-theme="dark"] .lc-page .lc-field textarea::placeholder,
+.admin-shell[data-theme="dark"] .lc-page .lc-search input::placeholder {
+  color: #a8a2bf;
+}
+
+.admin-shell[data-theme="dark"] .lc-page .lc-field {
+  color: #f6f4ff;
+}
+
+.admin-shell[data-theme="dark"] .lc-page .lc-field small {
+  color: #b7b2d0;
+}
+
+/* Smaller screens */
+@media (max-width: 900px) {
+  .lc-page .lc-actions {
+    min-width: 150px;
+  }
+
+  .lc-page .lc-actions button,
+  .lc-page .lc-actions a {
+    padding: 7px 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .lc-page .lc-panel-heading {
+    gap: 12px;
+  }
+
+  .lc-page .lc-panel-heading .lc-secondary {
+    width: 100%;
+  }
+
+  .lc-page .lc-table {
+    min-width: 950px;
+  }
+
+  .lc-page .lc-actions {
+    min-width: 220px;
+  }
+
+  .lc-page .lc-actions button,
+  .lc-page .lc-actions a {
+    min-height: 34px;
+  }
+}
+/* Delete live class confirmation modal */
+.lc-page .lc-delete-confirm-modal {
+  width: min(440px, 100%);
+  max-height: calc(100vh - 40px);
+  padding: 28px;
+}
+
+.lc-delete-confirm-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 18px;
+  border-radius: 14px;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 22px;
+}
+
+.lc-delete-confirm-content h2 {
+  margin: 8px 0 10px;
+  color: var(--lc-text);
+  font-size: 21px;
+  line-height: 1.35;
+}
+
+.lc-delete-confirm-content p {
+  margin: 0;
+  color: var(--lc-muted);
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.lc-delete-confirm-content strong {
+  color: var(--lc-text);
+}
+
+.lc-delete-confirm-modal .lc-modal-actions {
+  margin-top: 24px;
+}
+
+.lc-page .lc-delete-confirm-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid #dc2626;
+  border-radius: 10px;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.lc-page .lc-delete-confirm-button:hover {
+  background: #b91c1c;
+}
+
+.lc-page .lc-delete-confirm-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.admin-shell[data-theme="dark"] .lc-delete-confirm-content h2 {
+  color: #ffffff;
+}
+
+@media (max-width: 480px) {
+  .lc-page .lc-delete-confirm-modal {
+    padding: 20px;
+  }
+
+  .lc-delete-confirm-modal .lc-modal-actions {
+    flex-wrap: wrap;
+  }
+}
+
+/* Pagination: display exactly 3 live-class records per page */
+.lc-page .lc-pagination-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.lc-page .lc-pagination-info { color: var(--lc-muted); font-size: 12px; }
+.lc-page .lc-pagination-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.lc-page .lc-page-btn {
+  min-width: 34px; min-height: 32px; padding: 6px 10px;
+  border: 1px solid var(--lc-border); border-radius: 8px;
+  background: var(--lc-card); color: var(--lc-text);
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.lc-page .lc-page-btn:hover:not(:disabled) { border-color: var(--lc-accent); color: var(--lc-accent); }
+.lc-page .lc-page-btn.active { border-color: var(--lc-accent); background: var(--lc-accent); color: #fff; }
+.admin-shell[data-theme="dark"] .lc-page .lc-page-btn.active { color: #171126; }
+.lc-page .lc-page-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+@media (max-width: 600px) {
+  .lc-page .lc-pagination-footer { align-items: flex-start; flex-direction: column; }
+  .lc-page .lc-pagination-controls { width: 100%; }
+}
