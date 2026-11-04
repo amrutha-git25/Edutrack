@@ -1,2 +1,11 @@
 2026-11-04 10:51:28,135 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
 2026-11-04 11:03:29,645 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-11-04 21:22:11,699 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-11-04 21:23:07,766 | INFO | django.server | "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+2026-11-04 21:23:09,548 | INFO | django.server | "POST /api/auth/login/ HTTP/1.1" 200 680
+2026-11-04 21:23:09,684 | INFO | django.server | "OPTIONS /api/reports/admin/overview/ HTTP/1.1" 200 0
+2026-11-04 21:23:09,695 | INFO | django.server | "OPTIONS /api/reports/admin/overview/ HTTP/1.1" 200 0
+2026-11-04 21:23:09,837 | INFO | django.server | "GET /api/reports/admin/overview/ HTTP/1.1" 200 2637
+2026-11-04 21:23:09,958 | INFO | django.server | "GET /api/reports/admin/overview/ HTTP/1.1" 200 2637
+2026-11-04 21:23:30,065 | INFO | django.server | "OPTIONS /api/ai-services/exams/generate/ HTTP/1.1" 200 0
+2026-11-04 21:24:00,695 | INFO | django.server | "POST /api/ai-services/exams/generate/ HTTP/1.1" 200 7462
