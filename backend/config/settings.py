@@ -153,7 +153,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-
+STATIC_ROOT = BASE_DIR / "staticfiles"
 # Email configuration for EduTrack password reset
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
