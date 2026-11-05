@@ -13,3 +13,4 @@ requests
 python-dotenv
 python-decouple
 channels
+python-dateutil
