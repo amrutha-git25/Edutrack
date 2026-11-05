@@ -11,3 +11,4 @@ whitenoise
 Pillow
 requests
 python-dotenv
+python-decouple
