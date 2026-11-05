@@ -182,6 +182,7 @@ PASSWORD_RESET_TIMEOUT = 1800
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://edutrack-16ki.vercel.app",
 ]
 
 REST_FRAMEWORK = {
