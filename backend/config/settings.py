@@ -33,10 +33,9 @@ SECRET_KEY = config("DJANGO_SECRET_KEY")
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = config(
-    "DJANGO_ALLOWED_HOSTS",
-    default="127.0.0.1,localhost",
-    cast=Csv()
-)
+    "ALLOWED_HOSTS",
+    default="localhost,127.0.0.1,.onrender.com"
+).split(",")
 
 # Application definition
 
