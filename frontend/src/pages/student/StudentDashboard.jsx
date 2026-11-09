@@ -16,9 +16,8 @@ import "./StudentDashboard.css";
 
 const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL ||
-  "https://edutrack-7-rey4.onrender.com"
+  "https://edutrack-7-rey4.onrender.com/api"
 ).replace(/\/+$/, "");
-
 function getAccessToken() {
   // Supports the common token keys used by the EduTrack login flow.
   const directKeys = ["access", "access_token", "accessToken"];

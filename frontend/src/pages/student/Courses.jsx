@@ -20,7 +20,7 @@ const API_BASE = (
   "https://edutrack-7-rey4.onrender.com/api"
 ).replace(/\/+$/, "");
 
-const API_PREFIX = "/api/student/courses/";
+const API_PREFIX = "/student/courses/";
 function accessToken() {
   for (const storage of [localStorage, sessionStorage]) {
     for (const key of ["access", "access_token", "accessToken"]) {
@@ -266,7 +266,7 @@ export default function Courses() {
     try {
       const [coursesResult, progressResult] = await Promise.allSettled([
         apiGet(API_PREFIX, signal),
-        apiGet("/api/courses/student/progress/", signal),
+        apiGet("/courses/student/progress/", signal),
       ]);
 
       if (coursesResult.status === "rejected") {
