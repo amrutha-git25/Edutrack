@@ -1,5 +1,6 @@
 
 import secrets
+import logging
 from drf_spectacular.utils import extend_schema
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -59,6 +60,8 @@ from .serializers import (
     ResendOTPSerializer,
 )
 
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -148,6 +151,7 @@ def send_registration_otp(request):
     try:
         send_registration_email(email, otp)
     except Exception:
+        logger.exception("EduTrack registration OTP email failed for %s", email)
         cache.delete(pending_registration_key(email))
         cache.delete(otp_cache_key(email))
         return Response(
@@ -362,6 +366,7 @@ def resend_registration_otp(request):
     try:
         send_registration_email(email, otp)
     except Exception:
+        logger.exception("EduTrack registration OTP resend failed for %s", email)
         cache.delete(otp_cache_key(email))
         return Response(
             {
