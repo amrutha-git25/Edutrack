@@ -1,16 +1,19 @@
 from django.urls import path
-from .views import StudentDashboardView, StudySessionListCreateView
+
+from .views import (
+    StudentDashboardView,
+    StudySessionListCreateView,
+)
 
 from .activity_views import (
     StudentMaterialProgressView,
+    StudentLearningActivityView,
 )
-from .activity_views import StudentLearningActivityView
+
 app_name = "student_dashboard"
 
 urlpatterns = [
-    path("dashboard/", StudentDashboardView.as_view(), name="dashboard"),
-    path("study-sessions/", StudySessionListCreateView.as_view(), name="study-sessions"),
-      path(
+    path(
         "dashboard/",
         StudentDashboardView.as_view(),
         name="dashboard",
@@ -26,8 +29,8 @@ urlpatterns = [
         name="learning-activity",
     ),
     path(
-    "learning-activity/<int:material_id>/",
-    StudentMaterialProgressView.as_view(),
-    name="material-progress",
-),
+        "learning-activity/<int:material_id>/",
+        StudentMaterialProgressView.as_view(),
+        name="material-progress",
+    ),
 ]
