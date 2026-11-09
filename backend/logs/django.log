@@ -9,3 +9,71 @@
 2026-11-04 21:23:09,958 | INFO | django.server | "GET /api/reports/admin/overview/ HTTP/1.1" 200 2637
 2026-11-04 21:23:30,065 | INFO | django.server | "OPTIONS /api/ai-services/exams/generate/ HTTP/1.1" 200 0
 2026-11-04 21:24:00,695 | INFO | django.server | "POST /api/ai-services/exams/generate/ HTTP/1.1" 200 7462
+2026-11-05 12:33:53,560 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-11-05 12:40:06,863 | INFO | django.utils.autoreload | C:\Users\BVisweswaraRao\OneDrive - Dynamic Drilling\Desktop\EduTrack\backend\config\settings.py changed, reloading.
+2026-11-05 12:40:08,335 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-11-05 12:40:43,429 | INFO | django.utils.autoreload | C:\Users\BVisweswaraRao\OneDrive - Dynamic Drilling\Desktop\EduTrack\backend\config\settings.py changed, reloading.
+2026-11-05 12:40:44,649 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-11-05 12:43:37,730 | INFO | django.utils.autoreload | C:\Users\BVisweswaraRao\OneDrive - Dynamic Drilling\Desktop\EduTrack\backend\config\settings.py changed, reloading.
+2026-11-05 12:43:38,942 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-11-05 12:44:54,249 | INFO | django.server | "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+2026-11-05 12:44:55,796 | WARNING | django.server | "POST /api/auth/login/ HTTP/1.1" 401 56
+2026-11-05 12:45:25,208 | INFO | django.server | "POST /api/auth/login/ HTTP/1.1" 200 680
+2026-11-05 12:45:32,147 | INFO | django.server | "POST /api/auth/login/ HTTP/1.1" 200 680
+2026-11-05 12:45:32,313 | INFO | django.server | "OPTIONS /api/reports/admin/overview/ HTTP/1.1" 200 0
+2026-11-05 12:45:32,322 | INFO | django.server | "OPTIONS /api/reports/admin/overview/ HTTP/1.1" 200 0
+2026-11-05 12:45:32,489 | INFO | django.server | "GET /api/reports/admin/overview/ HTTP/1.1" 200 2637
+2026-11-05 12:45:32,654 | INFO | django.server | "GET /api/reports/admin/overview/ HTTP/1.1" 200 2637
+2026-11-05 12:46:09,353 | INFO | django.server | "OPTIONS /api/users/mentors/ HTTP/1.1" 200 0
+2026-11-05 12:46:09,357 | INFO | django.server | "OPTIONS /api/courses/ HTTP/1.1" 200 0
+2026-11-05 12:46:09,368 | INFO | django.server | "OPTIONS /api/users/mentors/ HTTP/1.1" 200 0
+2026-11-05 12:46:09,369 | INFO | django.server | "OPTIONS /api/courses/ HTTP/1.1" 200 0
+2026-11-05 12:46:09,543 | INFO | django.server | "GET /api/users/mentors/ HTTP/1.1" 200 1325
+2026-11-05 12:46:09,544 | INFO | django.server | "GET /api/courses/ HTTP/1.1" 200 1334
+2026-11-05 12:46:09,622 | INFO | django.server | "GET /media/course_thumbnails/Screenshot_2026-10-31_124810.png HTTP/1.1" 304 0
+2026-11-05 12:46:09,623 | INFO | django.server | "GET /media/course_thumbnails/Screenshot_2026-10-22_140819_2Z90VPp.png HTTP/1.1" 304 0
+2026-11-05 12:46:09,628 | INFO | django.server | "GET /media/course_thumbnails/mentor_yellow.png HTTP/1.1" 304 0
+2026-11-05 12:46:09,722 | INFO | django.server | "GET /api/users/mentors/ HTTP/1.1" 200 1325
+2026-11-05 12:46:09,732 | INFO | django.server | "GET /api/courses/ HTTP/1.1" 200 1334
+2026-11-05 12:46:14,234 | INFO | django.server | "OPTIONS /api/users/students/ HTTP/1.1" 200 0
+2026-11-05 12:46:14,236 | INFO | django.server | "OPTIONS /api/users/students/ HTTP/1.1" 200 0
+2026-11-05 12:46:14,324 | INFO | django.server | "GET /api/users/students/ HTTP/1.1" 200 2034
+2026-11-05 12:46:14,424 | INFO | django.server | "GET /api/users/students/ HTTP/1.1" 200 2034
+2026-11-05 12:46:28,563 | INFO | django.server | "OPTIONS /api/courses/mentor-assignments/ HTTP/1.1" 200 0
+2026-11-05 12:46:28,570 | INFO | django.server | "OPTIONS /api/courses/mentor-assignments/ HTTP/1.1" 200 0
+2026-11-05 12:46:28,663 | INFO | django.server | "GET /api/users/mentors/ HTTP/1.1" 200 1325
+2026-11-05 12:46:28,685 | INFO | django.server | "GET /api/users/students/ HTTP/1.1" 200 2034
+2026-11-05 12:46:28,747 | INFO | django.server | "GET /api/courses/mentor-assignments/ HTTP/1.1" 200 3052
+2026-11-05 12:46:28,844 | INFO | django.server | "GET /api/users/mentors/ HTTP/1.1" 200 1325
+2026-11-05 12:46:28,857 | INFO | django.server | "GET /api/courses/ HTTP/1.1" 200 1334
+2026-11-05 12:46:28,892 | INFO | django.server | "GET /api/users/students/ HTTP/1.1" 200 2034
+2026-11-05 12:46:28,925 | INFO | django.server | "GET /api/courses/mentor-assignments/ HTTP/1.1" 200 3052
+2026-11-05 12:46:29,027 | INFO | django.server | "GET /api/courses/ HTTP/1.1" 200 1334
+2026-11-05 12:46:55,923 | INFO | django.server | "GET /api/users/students/ HTTP/1.1" 200 2034
+2026-11-05 12:46:56,031 | INFO | django.server | "GET /api/users/students/ HTTP/1.1" 200 2034
+2026-11-05 12:47:13,934 | INFO | django.server | "GET /api/users/mentors/ HTTP/1.1" 200 1325
+2026-11-05 12:47:14,012 | INFO | django.server | "GET /api/users/mentors/ HTTP/1.1" 200 1325
+2026-11-05 12:48:55,543 | INFO | django.server | "GET /api/users/mentors/ HTTP/1.1" 200 1325
+2026-11-05 12:48:55,564 | INFO | django.server | "GET /api/users/students/ HTTP/1.1" 200 2034
+2026-11-05 12:48:55,628 | INFO | django.server | "GET /api/courses/ HTTP/1.1" 200 1334
+2026-11-05 12:48:55,629 | INFO | django.server | "GET /api/courses/mentor-assignments/ HTTP/1.1" 200 3052
+2026-11-05 12:48:55,708 | INFO | django.server | "GET /api/users/mentors/ HTTP/1.1" 200 1325
+2026-11-05 12:48:55,719 | INFO | django.server | "GET /api/users/students/ HTTP/1.1" 200 2034
+2026-11-05 12:48:55,778 | INFO | django.server | "GET /api/courses/ HTTP/1.1" 200 1334
+2026-11-05 12:48:55,794 | INFO | django.server | "GET /api/courses/mentor-assignments/ HTTP/1.1" 200 3052
+2026-11-05 12:49:02,943 | INFO | django.server | "GET /api/courses/ HTTP/1.1" 200 1334
+2026-11-05 12:49:03,073 | INFO | django.server | "GET /api/courses/ HTTP/1.1" 200 1334
+2026-11-05 12:49:07,996 | INFO | django.server | "OPTIONS /api/users/admins/ HTTP/1.1" 200 0
+2026-11-05 12:49:07,997 | INFO | django.server | "OPTIONS /api/users/admins/ HTTP/1.1" 200 0
+2026-11-05 12:49:08,103 | INFO | django.server | "GET /api/users/admins/ HTTP/1.1" 200 226
+2026-11-05 12:49:08,217 | INFO | django.server | "GET /api/users/admins/ HTTP/1.1" 200 226
+2026-11-05 12:49:59,439 | INFO | django.server | "OPTIONS /api/learning/live-classes/ HTTP/1.1" 200 0
+2026-11-05 12:49:59,440 | INFO | django.server | "OPTIONS /api/learning/live-classes/ HTTP/1.1" 200 0
+2026-11-05 12:49:59,561 | INFO | django.server | "GET /api/learning/live-classes/ HTTP/1.1" 200 1236
+2026-11-05 12:49:59,691 | INFO | django.server | "GET /api/learning/live-classes/ HTTP/1.1" 200 1236
+2026-11-06 08:59:28,076 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-11-06 09:00:29,783 | INFO | django.server | "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+2026-11-06 09:00:31,584 | INFO | django.server | "POST /api/auth/login/ HTTP/1.1" 200 698
+2026-11-06 09:00:31,658 | INFO | django.server | "OPTIONS /api/student/dashboard/ HTTP/1.1" 200 0
+2026-11-06 09:00:31,663 | INFO | django.server | "OPTIONS /api/student/dashboard/ HTTP/1.1" 200 0
+2026-11-06 09:00:31,860 | INFO | django.server | "GET /api/student/dashboard/ HTTP/1.1" 200 12288
