@@ -331,7 +331,7 @@ LOGGING = {
         },
     },
 }
-
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
 
 # =========================
 # ERROR & PERFORMANCE MONITORING (SENTRY)
