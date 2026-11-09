@@ -152,10 +152,10 @@ export default function CertificatesManagement() {
 
     try {
       const results = await Promise.allSettled([
-        api.get("/api/learning/certificates/students/"),
-        api.get("/api/courses/"),
-        api.get("/api/learning/certificates/"),
-        api.get("/api/reports/admin/certificates/"),
+        api.get("/learning/certificates/students/"),
+api.get("/courses/"),
+api.get("/learning/certificates/"),
+api.get("/reports/admin/certificates/"),
       ]);
 
       const [
@@ -313,13 +313,13 @@ export default function CertificatesManagement() {
     const toastId = toast.loading("Issuing certificate...");
 
     try {
-      const response = await api.post(
-        "/api/learning/certificates/",
-        {
-          student: Number(selectedStudent),
-          course: Number(selectedCourse),
-        }
-      );
+     const response = await api.post(
+  "/learning/certificates/",
+  {
+    student: Number(selectedStudent),
+    course: Number(selectedCourse),
+  }
+);
 
       const message =
         response.data?.message || "Certificate issued successfully.";
@@ -350,9 +350,9 @@ export default function CertificatesManagement() {
 
     try {
       const response = await api.get(
-        `/api/learning/certificates/${certificate.id}/download/`,
-        { responseType: "blob" }
-      );
+  `/learning/certificates/${certificate.id}/download/`,
+  { responseType: "blob" }
+);
 
       const blobUrl = window.URL.createObjectURL(
         new Blob([response.data], {
