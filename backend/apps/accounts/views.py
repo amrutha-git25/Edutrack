@@ -375,12 +375,15 @@ def resend_registration_otp(request):
 # Keep these existing view names if your urls.py references them.
 # These placeholders must be replaced with your actual implementations.
 
+
 @api_view(["GET"])
+@permission_classes([AllowAny])
 def api_status(request):
     return Response({
         "success": True,
-        "message": "EduTrack API running",
+        "message": "EduTrack API running"
     })
+
 
 
 @extend_schema(
