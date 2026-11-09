@@ -77,29 +77,25 @@ def pending_registration_key(email):
     return f"edutrack_registration_{email.strip().lower()}"
 
 
-import resend
-from django.conf import settings
-
-
 def send_registration_email(email, otp):
-    resend.api_key = settings.RESEND_API_KEY
+    subject = "Your EduTrack verification code"
 
-    params = {
-        "from": settings.DEFAULT_FROM_EMAIL,
-        "to": [email],
-        "subject": "Your EduTrack verification code",
-        "text": (
-            f"Your EduTrack email verification code is {otp}.\n"
-            f"It expires in {OTP_EXPIRY_SECONDS} seconds.\n"
-            "If you did not request this code, ignore this email."
-        ),
-    }
+    message = (
+        f"Your EduTrack email verification code is {otp}.\n"
+        f"It expires in {OTP_EXPIRY_SECONDS} seconds.\n"
+        "If you did not request this code, ignore this email."
+    )
 
-    try:
-        resend.Emails.send(params)
-    except Exception as e:
-        raise Exception(f"Failed to send verification email: {str(e)}")
+    sent = send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[email],
+        fail_silently=False,
+    )
 
+    if sent != 1:
+        raise Exception("Brevo SMTP failed to send the verification email.")
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def send_registration_otp(request):
