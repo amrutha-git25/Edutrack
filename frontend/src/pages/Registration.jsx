@@ -182,57 +182,62 @@ function Registration() {
   };
 
   const verifyOtp = async () => {
-    if (loading) return;
+  if (loading) return;
 
-    if (!/^\d{6}$/.test(otp)) {
-      toast.error('Enter the 6-digit OTP sent to your email.');
-      return;
-    }
+  if (!/^\d{6}$/.test(otp)) {
+    toast.error('Enter the 6-digit OTP sent to your email.');
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const response = await fetch(`${API_BASE}/register/verify-otp/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: form.email.trim().toLowerCase(),
-          otp,
-        }),
-      });
+  let otpVerificationSucceeded = false;
 
-      const data = await response.json().catch(() => ({}));
+  try {
+    const response = await fetch(`${API_BASE}/register/verify-otp/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: form.email.trim().toLowerCase(),
+        otp,
+      }),
+    });
 
-      if (!response.ok || data.success === false) {
-        throw new Error(
-          getApiError(data, 'OTP verification failed.')
-        );
-      }
+    const data = await response.json().catch(() => ({}));
 
-      const token =
-        data.verification_token ||
-        data.token ||
-        data.data?.verification_token ||
-        data.data?.token ||
-        '';
-
-      setVerificationToken(token);
-      setOtpVerified(true);
-
-      toast.success(
-        data.message ||
-          'Email verified successfully. Continue to create your account.'
+    if (!response.ok || data.success === false) {
+      throw new Error(
+        getApiError(data, 'OTP verification failed.')
       );
-    } catch (err) {
-      console.error('OTP verification error:', err);
-
-      toast.error(err.message || 'OTP verification failed.');
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // OTP is successfully verified
+    otpVerificationSucceeded = true;
+
+    const token =
+      data.verification_token ||
+      data.token ||
+      data.data?.verification_token ||
+      data.data?.token ||
+      '';
+
+    setVerificationToken(token);
+    setOtpVerified(true);
+
+    toast.success('Email verified successfully!');
+  } catch (err) {
+    console.error('OTP verification error:', err);
+
+    // Suppress error toast if verification already succeeded
+    if (!otpVerificationSucceeded) {
+      toast.error(err.message || 'OTP verification failed.');
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   const resendOtp = async () => {
     if (loading) return;
