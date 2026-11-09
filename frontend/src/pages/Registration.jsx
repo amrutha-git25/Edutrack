@@ -24,7 +24,10 @@ import { FaGraduationCap } from 'react-icons/fa6';
 import { toast } from 'sonner';
 import './Registration.css';
 
-const API_BASE = 'http://127.0.0.1:8000/api/auth';
+const API_BASE = (
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://edutrack-7-rey4.onrender.com/api"
+).replace(/\/+$/, "") + "/auth";
 
 const initialForm = {
   first_name: '',

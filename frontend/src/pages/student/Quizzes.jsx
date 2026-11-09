@@ -20,7 +20,10 @@ import "./Quizzes.css";
 import { useAdminTheme } from "../../context/ThemeContext";
 import { toast, Toaster } from "sonner";
 
-const API_BASE = "http://127.0.0.1:8000/api/ai-services";
+const API_BASE = (
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://edutrack-7-rey4.onrender.com/api"
+).replace(/\/+$/, "") + "/ai-services";
 
 function getAccessToken() {
   return (

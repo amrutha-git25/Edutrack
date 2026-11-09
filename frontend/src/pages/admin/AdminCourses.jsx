@@ -16,8 +16,9 @@ import {
 } from "react-icons/fi";
 import "../../styles/admin-courses.css";
 
-const API_URL = "http://127.0.0.1:8000/api/courses/";
-const API_ORIGIN = "http://127.0.0.1:8000";
+const API_URL = `${import.meta.env.VITE_API_BASE_URL || "https://edutrack-7-rey4.onrender.com/api"}/courses/`;
+
+const API_ORIGIN = "https://edutrack-7-rey4.onrender.com";
 
 const EMPTY_FORM = {
   title: "",

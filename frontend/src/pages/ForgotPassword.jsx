@@ -12,7 +12,7 @@ import {
 import { toast } from "sonner";
 import "./ForgotPassword.css";
 
-const API_URL = "http://127.0.0.1:8000/api/auth/password-reset/";
+const API_URL = `${import.meta.env.VITE_API_BASE_URL || "https://edutrack-7-rey4.onrender.com/api"}/auth/password-reset/`;
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");

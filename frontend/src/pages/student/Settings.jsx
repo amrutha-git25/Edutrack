@@ -15,9 +15,8 @@ import "./Settings.css";
 
 const API_BASE = (
   import.meta.env.VITE_API_BASE_URL ||
-  "http://127.0.0.1:8000/api"
-).replace(/\/$/, "");
-
+  "https://edutrack-7-rey4.onrender.com/api"
+).replace(/\/+$/, "");
 const VALID_THEMES = ["dark", "light", "yellow"];
 
 const THEMES = [

@@ -25,7 +25,8 @@ import "./Assignments.css";
 /* ---------------- API CONFIGURATION ---------------- */
 
 const API_ROOT = (
-  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://edutrack-7-rey4.onrender.com"
 ).replace(/\/+$/, "");
 
 const API_BASE = API_ROOT.endsWith("/api")

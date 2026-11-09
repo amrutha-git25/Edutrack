@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import "../../styles/admin-students.css";
 
-const API_URL = "http://127.0.0.1:8000/api/users/students/";
+const API_URL = `${import.meta.env.VITE_API_BASE_URL || "https://edutrack-7-rey4.onrender.com/api"}/users/students/`;
 
 const emptyForm = {
   first_name: "",

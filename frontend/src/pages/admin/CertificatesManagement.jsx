@@ -19,15 +19,15 @@ import "./CertificatesManagement.css";
 // .env can contain either the backend origin or the origin ending in /api.
 // The request paths below already start with /api, so normalize the base URL.
 const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://edutrack-7-rey4.onrender.com"
 )
   .replace(/\/+$/, "")
   .replace(/\/api$/i, "");
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: `${API_BASE_URL}/api`,
 });
-
 api.interceptors.request.use((config) => {
   const token =
     sessionStorage.getItem("access_token") ||

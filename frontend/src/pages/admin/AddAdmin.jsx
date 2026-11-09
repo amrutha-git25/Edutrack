@@ -15,7 +15,10 @@ import { toast, Toaster } from "sonner";
 import { createAdmin } from "../../api/adminDashboardApi";
 import "./AddAdmin.css";
 
-const API_BASE = "http://127.0.0.1:8000/api";
+const API_BASE = (
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://edutrack-7-rey4.onrender.com/api"
+).replace(/\/+$/, "");
 
 const initialForm = {
   username: "",
