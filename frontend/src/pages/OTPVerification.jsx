@@ -12,10 +12,11 @@ import {
 } from "react-icons/fi";
 import { toast } from "sonner";
 import "./OTPVerification.css";
-
-const API_BASE=
+const API_BASE = (
   import.meta.env.VITE_API_BASE_URL ||
-  "https://edutrack-7-rey4.onrender.com/api";
+  "https://edutrack-7-rey4.onrender.com/api"
+).replace(/\/+$/, "") + "/auth";
+
 const PENDING_KEY = "edutrack_pending_registration";
 const TOKEN_KEY = "edutrack_email_verification_token";
 
