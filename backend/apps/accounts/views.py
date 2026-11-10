@@ -76,8 +76,21 @@ def otp_cache_key(email):
 def pending_registration_key(email):
     return f"edutrack_registration_{email.strip().lower()}"
 
+import os
+import requests
+from django.conf import settings
+
 
 def send_registration_email(email, otp):
+    api_key = os.getenv("BREVO_API_KEY")
+    sender_email = os.getenv(
+        "BREVO_SENDER_EMAIL",
+        settings.DEFAULT_FROM_EMAIL
+    )
+
+    if not api_key:
+        raise Exception("BREVO_API_KEY is not configured in Render.")
+
     subject = "Your EduTrack verification code"
 
     message = (
@@ -86,16 +99,42 @@ def send_registration_email(email, otp):
         "If you did not request this code, ignore this email."
     )
 
-    sent = send_mail(
-        subject=subject,
-        message=message,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[email],
-        fail_silently=False,
-    )
+    payload = {
+        "sender": {
+            "name": "EduTrack",
+            "email": sender_email
+        },
+        "to": [
+            {
+                "email": email
+            }
+        ],
+        "subject": subject,
+        "textContent": message
+    }
 
-    if sent != 1:
-        raise Exception("Brevo SMTP failed to send the verification email.")
+    headers = {
+        "api-key": api_key,
+        "accept": "application/json",
+        "content-type": "application/json"
+    }
+
+    try:
+        response = requests.post(
+            "https://api.brevo.com/v3/smtp/email",
+            headers=headers,
+            json=payload,
+            timeout=15
+        )
+
+        if response.status_code not in (200, 201):
+            raise Exception(
+                f"Brevo API error {response.status_code}: {response.text}"
+            )
+
+    except requests.RequestException as e:
+        raise Exception(f"Failed to send OTP email: {str(e)}")
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def send_registration_otp(request):
