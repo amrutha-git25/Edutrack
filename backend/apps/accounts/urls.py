@@ -1,6 +1,6 @@
 
 from django.urls import path
-from . import views
+
 from .views import (
     student_profile,
     upload_student_profile_picture,
@@ -101,9 +101,5 @@ path(
     get_profile_picture_content,
     name="get_profile_picture_content",
 ),
-path(
-    "auth/profile/photo/content/",
-    views.get_profile_picture_content,
-    name="get_profile_picture_content",
-),
+
 ]
