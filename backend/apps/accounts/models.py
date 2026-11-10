@@ -86,11 +86,10 @@ class AdminProfile(models.Model):
         related_name="admin_profile",
     )
     phone_number = models.CharField(max_length=15, blank=True, default="")
-    profile_picture = models.ImageField(
-        upload_to="admin_profiles/",
-        blank=True,
-        null=True,
-    )
+    # Store image bytes directly in PostgreSQL (Neon), not Render's filesystem.
+    profile_picture_data = models.BinaryField(blank=True, null=True)
+    profile_picture_content_type = models.CharField(max_length=50, blank=True, default="")
+    profile_picture_filename = models.CharField(max_length=255, blank=True, default="")
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

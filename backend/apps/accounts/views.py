@@ -3,6 +3,7 @@ import secrets
 import logging
 from drf_spectacular.utils import extend_schema
 from django.conf import settings
+from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.mail import send_mail
@@ -726,81 +727,65 @@ def change_password(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def upload_profile_picture(request):
-    """Upload or replace the administrator's profile picture."""
+    """Validate and store the administrator profile image bytes in Neon PostgreSQL."""
     if not request.user.is_superuser:
-        return Response(
-            {"success": False, "message": "Admin access required."},
-            status=status.HTTP_403_FORBIDDEN,
-        )
+        return Response({"success": False, "message": "Admin access required."},
+                        status=status.HTTP_403_FORBIDDEN)
 
     image = request.FILES.get("profile_picture")
     if not image:
-        return Response(
-            {
-                "success": False,
-                "message": "Select a profile picture to upload.",
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return Response({"success": False, "message": "Select a profile picture to upload."},
+                        status=status.HTTP_400_BAD_REQUEST)
 
-    allowed_extensions = {".jpg", ".jpeg", ".png"}
-    extension = __import__("os").path.splitext(image.name)[1].lower()
-
-    if extension not in allowed_extensions:
-        return Response(
-            {
-                "success": False,
-                "message": "Only JPG and PNG images are allowed.",
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
+    allowed_types = {"image/jpeg", "image/png"}
+    if image.content_type not in allowed_types:
+        return Response({"success": False, "message": "Only JPG and PNG images are allowed."},
+                        status=status.HTTP_400_BAD_REQUEST)
     if image.size > 5 * 1024 * 1024:
-        return Response(
-            {
-                "success": False,
-                "message": "Image size must not exceed 5 MB.",
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return Response({"success": False, "message": "Image size must not exceed 5 MB."},
+                        status=status.HTTP_400_BAD_REQUEST)
 
-    # Validate that the uploaded file is a readable image.
     try:
         from PIL import Image
-
+        image.seek(0)
         with Image.open(image) as uploaded_image:
             if uploaded_image.format not in {"JPEG", "PNG"}:
-                raise ValueError("Unsupported image format.")
+                raise ValueError("Unsupported image format")
             uploaded_image.verify()
         image.seek(0)
+        image_bytes = image.read()
     except Exception:
-        return Response(
-            {
-                "success": False,
-                "message": "The uploaded file is not a valid JPG or PNG image.",
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return Response({"success": False, "message": "The uploaded file is not a valid JPG or PNG image."},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     profile, _ = AdminProfile.objects.get_or_create(user=request.user)
+    profile.profile_picture_data = image_bytes
+    profile.profile_picture_content_type = image.content_type
+    profile.profile_picture_filename = image.name[:255]
+    profile.save(update_fields=["profile_picture_data", "profile_picture_content_type",
+                               "profile_picture_filename", "updated_at"])
 
-    if profile.profile_picture:
-        profile.profile_picture.delete(save=False)
+    return Response({"success": True, "message": "Profile picture updated successfully.",
+                     "data": ProfileSerializer(request.user, context={"request": request}).data},
+                    status=status.HTTP_200_OK)
 
-    profile.profile_picture = image
-    profile.save()
 
-    return Response(
-        {
-            "success": True,
-            "message": "Profile picture updated successfully.",
-            "data": ProfileSerializer(
-                request.user,
-                context={"request": request},
-            ).data,
-        },
-        status=status.HTTP_200_OK,
-    )
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_profile_picture_content(request):
+    """Serve image bytes stored in PostgreSQL."""
+    if not request.user.is_superuser:
+        return Response({"success": False, "message": "Admin access required."},
+                        status=status.HTTP_403_FORBIDDEN)
+    profile = AdminProfile.objects.filter(user=request.user).first()
+    if not profile or not profile.profile_picture_data:
+        return Response({"success": False, "message": "Profile picture not found."},
+                        status=status.HTTP_404_NOT_FOUND)
+    response = HttpResponse(profile.profile_picture_data,
+                            content_type=profile.profile_picture_content_type or "image/png")
+    response["Cache-Control"] = "private, max-age=300"
+    response["X-Content-Type-Options"] = "nosniff"
+    return response
 
 
 @api_view(["DELETE"])
@@ -815,10 +800,12 @@ def delete_profile_picture(request):
 
     profile, _ = AdminProfile.objects.get_or_create(user=request.user)
 
-    if profile.profile_picture:
-        profile.profile_picture.delete(save=False)
-        profile.profile_picture = None
-        profile.save(update_fields=["profile_picture", "updated_at"])
+    if profile.profile_picture_data:
+        profile.profile_picture_data = None
+        profile.profile_picture_content_type = ""
+        profile.profile_picture_filename = ""
+        profile.save(update_fields=["profile_picture_data", "profile_picture_content_type",
+                                   "profile_picture_filename", "updated_at"])
 
     return Response(
         {

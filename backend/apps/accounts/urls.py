@@ -24,7 +24,7 @@ from .views import (
     delete_profile_picture,
     AdminSystemSettingsView,
 )
-
+from .views import get_profile_picture_content
 urlpatterns = [
     path("status/", api_status, name="api-status"),
 
@@ -94,5 +94,10 @@ path(
     "password-reset/confirm/",
     password_reset_confirm,
     name="password-reset-confirm",
+),
+path(
+    "auth/profile/photo/content/",
+    get_profile_picture_content,
+    name="get_profile_picture_content",
 ),
 ]

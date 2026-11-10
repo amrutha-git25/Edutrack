@@ -1,20 +1,10 @@
-
 import re
 
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
-from .models import SystemSettings
-
-from pathlib import Path
-
-import re
-
-
 from django.contrib.auth.password_validation import validate_password
+from rest_framework import serializers
 
-
-
-from .models import AdminProfile
+from .models import SystemSettings, AdminProfile
 
 User = get_user_model()
 
@@ -55,16 +45,19 @@ class SendOTPSerializer(serializers.Serializer):
     last_name = serializers.CharField(max_length=150)
     email = serializers.EmailField()
     phone_number = serializers.CharField(max_length=15)
+
     password = serializers.CharField(
         write_only=True,
         trim_whitespace=False,
         style={"input_type": "password"},
     )
+
     confirm_password = serializers.CharField(
         write_only=True,
         trim_whitespace=False,
         style={"input_type": "password"},
     )
+
     role = serializers.ChoiceField(
         choices=[
             ("STUDENT", "Student"),
@@ -74,14 +67,22 @@ class SendOTPSerializer(serializers.Serializer):
 
     def validate_first_name(self, value):
         value = value.strip()
+
         if not value:
-            raise serializers.ValidationError("First name is required.")
+            raise serializers.ValidationError(
+                "First name is required."
+            )
+
         return value
 
     def validate_last_name(self, value):
         value = value.strip()
+
         if not value:
-            raise serializers.ValidationError("Last name is required.")
+            raise serializers.ValidationError(
+                "Last name is required."
+            )
+
         return value
 
     def validate_email(self, value):
@@ -97,7 +98,6 @@ class SendOTPSerializer(serializers.Serializer):
     def validate_phone_number(self, value):
         value = value.strip()
 
-        # Accept 10-digit Indian mobile numbers.
         if not re.fullmatch(r"[6-9]\d{9}", value):
             raise serializers.ValidationError(
                 "Enter a valid 10-digit Indian mobile number."
@@ -119,6 +119,7 @@ class SendOTPSerializer(serializers.Serializer):
 
 class VerifyOTPSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
     otp = serializers.CharField(
         min_length=6,
         max_length=6,
@@ -133,6 +134,7 @@ class VerifyOTPSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 "OTP must contain exactly 6 digits."
             )
+
         return value
 
 
@@ -145,10 +147,12 @@ class ResendOTPSerializer(serializers.Serializer):
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
     password = serializers.CharField(
         write_only=True,
         trim_whitespace=False,
     )
+
     role = serializers.CharField()
 
     def validate_email(self, value):
@@ -172,44 +176,67 @@ class LoginSerializer(serializers.Serializer):
 
 
 class ProfileSerializer(serializers.Serializer):
-    first_name = serializers.CharField(max_length=150, required=False)
-    last_name = serializers.CharField(max_length=150, required=False)
+    first_name = serializers.CharField(
+        max_length=150,
+        required=False,
+    )
+
+    last_name = serializers.CharField(
+        max_length=150,
+        required=False,
+    )
+
     email = serializers.EmailField(required=False)
+
     phone_number = serializers.CharField(
-        max_length=15, required=False, allow_blank=True
+        max_length=15,
+        required=False,
+        allow_blank=True,
     )
 
     def validate_first_name(self, value):
         value = value.strip()
+
         if not value:
-            raise serializers.ValidationError("First name is required.")
+            raise serializers.ValidationError(
+                "First name is required."
+            )
+
         return value
 
     def validate_last_name(self, value):
         value = value.strip()
+
         if not value:
-            raise serializers.ValidationError("Last name is required.")
+            raise serializers.ValidationError(
+                "Last name is required."
+            )
+
         return value
 
     def validate_email(self, value):
         value = value.strip().lower()
+
         User = get_user_model()
         user = self.context["request"].user
 
-        if User.objects.filter(email__iexact=value).exclude(
-            pk=user.pk
-        ).exists():
+        if User.objects.filter(
+            email__iexact=value
+        ).exclude(pk=user.pk).exists():
             raise serializers.ValidationError(
                 "An account with this email already exists."
             )
+
         return value
 
     def validate_phone_number(self, value):
         value = value.strip()
+
         if value and not re.fullmatch(r"[6-9]\d{9}", value):
             raise serializers.ValidationError(
                 "Enter a valid 10-digit Indian mobile number."
             )
+
         return value
 
     def update(self, instance, validated_data):
@@ -220,23 +247,40 @@ class ProfileSerializer(serializers.Serializer):
 
         instance.save()
 
-        # Phone number is stored separately from Django's User model.
-        profile, _ = AdminProfile.objects.get_or_create(user=instance)
+        # Phone number is stored separately in AdminProfile.
+        profile, _ = AdminProfile.objects.get_or_create(
+            user=instance
+        )
+
         if "phone_number" in validated_data:
             profile.phone_number = validated_data["phone_number"]
-            profile.save(update_fields=["phone_number", "updated_at"])
+
+            profile.save(
+                update_fields=[
+                    "phone_number",
+                    "updated_at",
+                ]
+            )
 
         return instance
 
     def to_representation(self, instance):
-        profile, _ = AdminProfile.objects.get_or_create(user=instance)
+        profile, _ = AdminProfile.objects.get_or_create(
+            user=instance
+        )
+
         request = self.context.get("request")
 
         picture_url = None
-        if profile.profile_picture:
-            picture_url = profile.profile_picture.url
+
+        # Profile picture is stored as binary data in PostgreSQL.
+        if profile.profile_picture_data:
+            picture_url = "/api/auth/profile/photo/content/"
+
             if request:
-                picture_url = request.build_absolute_uri(picture_url)
+                picture_url = request.build_absolute_uri(
+                    picture_url
+                )
 
         return {
             "id": instance.pk,
@@ -255,10 +299,12 @@ class ChangePasswordSerializer(serializers.Serializer):
         write_only=True,
         trim_whitespace=False,
     )
+
     new_password = serializers.CharField(
         write_only=True,
         trim_whitespace=False,
     )
+
     confirm_password = serializers.CharField(
         write_only=True,
         trim_whitespace=False,
@@ -276,7 +322,8 @@ class ChangePasswordSerializer(serializers.Serializer):
         if attrs["current_password"] == attrs["new_password"]:
             raise serializers.ValidationError({
                 "new_password": (
-                    "Your new password must differ from your current password."
+                    "Your new password must differ from "
+                    "your current password."
                 )
             })
 
@@ -286,6 +333,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 class SystemSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = SystemSettings
+
         fields = [
             "platform_name",
             "support_email",
@@ -298,29 +346,36 @@ class SystemSettingsSerializer(serializers.ModelSerializer):
             "session_timeout_minutes",
             "updated_at",
         ]
+
         read_only_fields = ["updated_at"]
 
     def validate_platform_name(self, value):
         value = value.strip()
+
         if not value:
             raise serializers.ValidationError(
                 "Platform name cannot be empty."
             )
+
         return value
 
     def validate_support_phone(self, value):
         value = value.strip()
+
         if value and len(value) > 20:
             raise serializers.ValidationError(
                 "Support phone number is too long."
             )
+
         return value
+
 
 class StudentProfileSerializer(serializers.ModelSerializer):
     profile_picture = serializers.SerializerMethodField()
 
     class Meta:
         model = User
+
         fields = [
             "id",
             "first_name",
@@ -329,13 +384,19 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "profile_picture",
             "date_joined",
         ]
-        read_only_fields = ["id", "date_joined"]
+
+        read_only_fields = [
+            "id",
+            "date_joined",
+        ]
 
     def get_profile_picture(self, obj):
-        """Return the image URL stored on the user's existing Student profile."""
+        """Return the image URL stored on the user's Student profile."""
+
         try:
             student = obj.student_profile
             image = student.profile_image
+
         except (AttributeError, ValueError):
             return None
 
@@ -344,27 +405,36 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
         try:
             image_url = image.url
+
         except ValueError:
-            # The field exists but no file has been saved for this student.
             return None
 
         request = self.context.get("request")
-        return request.build_absolute_uri(image_url) if request else image_url
+
+        return (
+            request.build_absolute_uri(image_url)
+            if request
+            else image_url
+        )
 
     def validate_first_name(self, value):
         value = value.strip()
+
         if not value:
             raise serializers.ValidationError(
                 "First name is required."
             )
+
         return value
 
     def validate_last_name(self, value):
         value = value.strip()
+
         if not value:
             raise serializers.ValidationError(
                 "Last name is required."
             )
+
         return value
 
     def validate_email(self, value):
@@ -385,10 +455,12 @@ class StudentChangePasswordSerializer(serializers.Serializer):
         write_only=True,
         trim_whitespace=False,
     )
+
     new_password = serializers.CharField(
         write_only=True,
         trim_whitespace=False,
     )
+
     confirm_password = serializers.CharField(
         write_only=True,
         trim_whitespace=False,
@@ -410,7 +482,8 @@ class StudentChangePasswordSerializer(serializers.Serializer):
         if attrs["current_password"] == attrs["new_password"]:
             raise serializers.ValidationError({
                 "new_password": (
-                    "Your new password must differ from your current password."
+                    "Your new password must differ from "
+                    "your current password."
                 )
             })
 
