@@ -97,7 +97,7 @@ path(
     name="password-reset-confirm",
 ),
 path(
-    "auth/profile/photo/content/",
+    "profile/photo/content/",
     get_profile_picture_content,
     name="get_profile_picture_content",
 ),
