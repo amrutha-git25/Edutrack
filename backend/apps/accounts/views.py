@@ -15,7 +15,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 from django.core.files.storage import default_storage
 
-from .models import SystemSettings, AdminProfile
+from .models import SystemSettings, AdminProfile, Student, StudentSettings
 from .serializers import (
     ProfileSerializer,
     ChangePasswordSerializer,
@@ -321,7 +321,23 @@ def verify_registration_otp(request):
 
             role_group, _ = Group.objects.get_or_create(name=role)
             user.groups.add(role_group)
+
+            # Create a linked Student profile for every new student account.
+            if role == "STUDENT":
+                Student.objects.create(
+                    user=user,
+                    pin_number=f"REG-{user.pk:06d}",
+                    percentage=0,
+                    branch="Not assigned",
+                    section="Not assigned",
+                    phone_number=registration_data.get("phone_number", ""),
+                )
+
+                # Create default settings if the model supports this relation.
+                StudentSettings.objects.get_or_create(user=user)
+
     except Exception:
+        logger.exception("EduTrack registration account/profile creation failed for %s", email)
         return Response(
             {
                 "success": False,
