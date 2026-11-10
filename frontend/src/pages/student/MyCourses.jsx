@@ -125,20 +125,21 @@ async function apiPost(url, payload) {
   return data;
 }
 
-function isDocumentMaterial(material) {
-  const type = String(material?.material_type || "").toLowerCase();
-  const file = String(material?.file_url || material?.file || "").toLowerCase();
+function isVideoMaterial(material) {
+  const type = String(material?.material_type || material?.type || "").toLowerCase();
+  const file = String(
+    material?.file_url || material?.supabase_url || material?.file || material?.storage_path || ""
+  ).toLowerCase();
+  return /video|\.(mp4|webm|ogg|mov|m4v)(\?|#|$)/i.test(`${type} ${file}`);
+}
+
+function isViewableMaterial(material) {
+  const type = String(material?.material_type || material?.type || "").toLowerCase();
+  const file = String(
+    material?.file_url || material?.supabase_url || material?.file || material?.storage_path || ""
+  ).toLowerCase();
   const combined = `${type} ${file}`;
-
-  if (/video|audio|\.(mp4|webm|ogg|mov|mp3|wav|m4a)(\?|$)/i.test(combined)) {
-    return false;
-  }
-
-  return (
-    /document|pdf|note|ppt|presentation|word|docx?|xlsx?|text|material/i.test(
-      combined
-    ) || Boolean(file)
-  );
+  return Boolean(file) && /video|audio|document|pdf|note|ppt|presentation|word|docx?|xlsx?|text|material|\.(mp4|webm|ogg|mov|m4v|mp3|wav|m4a|pdf|txt|png|jpe?g|gif|webp)(\?|#|$)/i.test(combined);
 }
 
 function getList(data) {
@@ -265,7 +266,7 @@ function MyCourses({ theme = "light" }) {
         `${API_BASE}${selectedCourse.id}/topics/${topic.id}/materials/`
       );
 
-      const documentMaterials = getList(data).filter(isDocumentMaterial);
+      const documentMaterials = getList(data).filter(isViewableMaterial);
       setMaterials(documentMaterials);
 
       const statusEntries = await Promise.all(
@@ -356,6 +357,19 @@ function MyCourses({ theme = "light" }) {
       setDocumentPreviewUrl("");
 
       try {
+        // Supabase-hosted videos should be streamed by the browser directly.
+        // Fetching them through the document-preview endpoint can break video playback.
+        if (isVideoMaterial(selectedMaterial)) {
+          const videoUrl = String(
+            selectedMaterial.file_url || selectedMaterial.supabase_url || selectedMaterial.file || ""
+          ).trim();
+          if (!/^https?:\/\//i.test(videoUrl)) {
+            throw new Error("The video URL is missing or is not a valid HTTP(S) URL.");
+          }
+          if (!cancelled) setDocumentPreviewUrl(videoUrl);
+          return;
+        }
+
         const token = getAccessToken();
 
         if (!token) {
@@ -940,7 +954,7 @@ function MyCourses({ theme = "light" }) {
             <EmptyState
               icon={<FileText size={28} />}
               title="No learning materials yet"
-              message="Notes, PDFs, presentations, and study documents uploaded for this topic will appear here."
+              message="Videos, notes, PDFs, presentations, and study documents uploaded for this topic will appear here."
             />
           ) : (
             <div className="ml-material-list">
@@ -959,7 +973,7 @@ function MyCourses({ theme = "light" }) {
                     key={material.id}
                   >
                     <div className="ml-material-type document">
-                      <FileText size={22} />
+                      {isVideoMaterial(material) ? <CirclePlay size={22} /> : <FileText size={22} />}
                     </div>
 
                     <div className="ml-material-details">
@@ -995,8 +1009,8 @@ function MyCourses({ theme = "light" }) {
                         className="ml-view-button"
                         onClick={() => openMaterial(material)}
                       >
-                        <Eye size={16} />
-                        Read
+                        {isVideoMaterial(material) ? <CirclePlay size={16} /> : <Eye size={16} />}
+                        {isVideoMaterial(material) ? "Watch" : "Read"}
                       </button>
 
                       <button
@@ -1048,7 +1062,7 @@ function MyCourses({ theme = "light" }) {
                 <h2>
                   {selectedMaterial.title || "Learning Material"}
                 </h2>
-                <span>Document Reader</span>
+                <span>{isVideoMaterial(selectedMaterial) ? "Video Player" : "Document Reader"}</span>
               </div>
             </div>
 
@@ -1087,12 +1101,29 @@ function MyCourses({ theme = "light" }) {
                 </button>
               </div>
             ) : documentPreviewUrl ? (
-              <iframe
-                className="ml-fullscreen-document"
-                src={documentPreviewUrl}
-                title={selectedMaterial.title || "Learning document"}
-                allow="fullscreen"
-              />
+              isVideoMaterial(selectedMaterial) ? (
+                <video
+                  className="ml-fullscreen-document"
+                  src={documentPreviewUrl}
+                  controls
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                  title={selectedMaterial.title || "Learning video"}
+                  onError={() => {
+                    const message = "Unable to play this video. Check that the Supabase object is public or its URL is valid, and that the file is a supported MP4/WebM video.";
+                    setDocumentPreviewError(message);
+                    toast.error(message);
+                  }}
+                />
+              ) : (
+                <iframe
+                  className="ml-fullscreen-document"
+                  src={documentPreviewUrl}
+                  title={selectedMaterial.title || "Learning document"}
+                  allow="fullscreen"
+                />
+              )
             ) : null}
           </main>
 
