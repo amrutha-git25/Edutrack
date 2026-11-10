@@ -169,24 +169,15 @@ export default function OTPVerification() {
         );
       }
 
-      const token =
-        data.verification_token ||
-        data.token ||
-        data.data?.verification_token ||
-        data.data?.token ||
-        "";
+  setVerified(true);
 
-      if (!token) {
-        throw new Error(
-          "OTP verified, but the server did not return a verification token. Check the verify-OTP API response."
-        );
-      }
+toast.success("OTP Verified Successfully!");
 
-      sessionStorage.setItem(TOKEN_KEY, token);
-      setVerificationToken(token);
-      setVerified(true);
+// Django already creates the account during OTP verification.
+sessionStorage.removeItem(PENDING_KEY);
+sessionStorage.removeItem(TOKEN_KEY);
 
-      toast.success(data.message || "Email verified successfully.");
+navigate("/login", { replace: true });
     } catch (error) {
       toast.error(error.message || "OTP verification failed.");
     } finally {
