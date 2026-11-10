@@ -182,9 +182,10 @@ class Material(models.Model):
     description = models.TextField(blank=True)
 
     file = models.FileField(
-        upload_to="course_materials/%Y/%m/",
-        storage=EduTrackCloudinaryStorage(),
-    )
+    upload_to="course_materials/%Y/%m/",
+    blank=True,
+)
+    supabase_url = models.URLField(blank=True, default="")
 
     material_type = models.CharField(
         max_length=20,

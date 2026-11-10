@@ -2,6 +2,8 @@
 # backend/apps/mentor_dashboard/topic_material_views.py
 
 from pathlib import Path
+import os
+import uuid
 
 from django.apps import apps
 from django.core.exceptions import FieldDoesNotExist
@@ -15,6 +17,8 @@ from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from supabase_client import supabase
 
 
 MAX_UPLOAD_BYTES = 100 * 1024 * 1024  # 100 MB
@@ -343,7 +347,7 @@ def _topic_data(topic):
 
 
 def _material_data(request, material):
-    file_value = _read(material, FILE_NAMES + ("file_url", "url", "video_url"))
+    file_value = _read(material, ("supabase_url", "file_url", "url", "video_url") + FILE_NAMES)
     material_type = _read(
         material, ("material_type", "type", "content_type", "kind"), ""
     )
@@ -776,18 +780,40 @@ class MentorTopicMaterialListCreateView(APIView):
         _set_if_present(Material, material, ("description", "notes"),
                         str(request.data.get("description") or "").strip())
 
-        file_field = _field(Material, FILE_NAMES)
-        if file_field is None or not getattr(file_field, "is_relation", False) is False:
+        # Upload the actual file to Supabase Storage; Neon stores only its URL.
+        bucket = os.environ.get("SUPABASE_BUCKET", "edutrack-videos")
+        file_path = (
+            f"topic_{topic.pk}/"
+            f"{uuid.uuid4().hex}_{Path(upload.name).name}"
+        )
+
+        try:
+            supabase.storage.from_(bucket).upload(
+                file_path,
+                upload.read(),
+                file_options={
+                    "content-type": upload.content_type or "application/octet-stream",
+                    "upsert": "false",
+                },
+            )
+            video_url = supabase.storage.from_(bucket).get_public_url(file_path)
+            if isinstance(video_url, dict):
+                video_url = video_url.get("publicUrl") or video_url.get("publicURL") or ""
+            if not video_url:
+                raise ValueError("Supabase did not return a public URL.")
+
+            # Requires Material.supabase_url to be a URLField in the Django model.
+            material.supabase_url = video_url
+
+            # Do not store the large upload in Django's FileField.
+            file_field = _field(Material, FILE_NAMES)
+            if file_field is not None and hasattr(file_field, "upload_to"):
+                setattr(material, file_field.name, "")
+        except Exception as e:
             return Response(
-                {"success": False, "message": "Material model needs a file upload field."},
+                {"success": False, "message": f"Supabase upload failed: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-        if not hasattr(file_field, "upload_to"):
-            return Response(
-                {"success": False, "message": "The material file field must be a Django FileField or ImageField."},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-        setattr(material, file_field.name, upload)
 
         type_field = _field(Material, ("material_type", "type", "content_type", "kind"))
         if type_field is not None and not type_field.is_relation:
@@ -852,17 +878,35 @@ class MentorMaterialDetailView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            file_field = _field(Material, FILE_NAMES)
-            if file_field is None or not hasattr(file_field, "upload_to"):
+            bucket = os.environ.get("SUPABASE_BUCKET", "edutrack-videos")
+            file_path = (
+                f"topic_{material.pk}/"
+                f"{uuid.uuid4().hex}_{Path(upload.name).name}"
+            )
+            try:
+                supabase.storage.from_(bucket).upload(
+                    file_path,
+                    upload.read(),
+                    file_options={
+                        "content-type": upload.content_type or "application/octet-stream",
+                        "upsert": "false",
+                    },
+                )
+                video_url = supabase.storage.from_(bucket).get_public_url(file_path)
+                if isinstance(video_url, dict):
+                    video_url = video_url.get("publicUrl") or video_url.get("publicURL") or ""
+                if not video_url:
+                    raise ValueError("Supabase did not return a public URL.")
+                material.supabase_url = video_url
+
+                file_field = _field(Material, FILE_NAMES)
+                if file_field is not None and hasattr(file_field, "upload_to"):
+                    setattr(material, file_field.name, "")
+            except Exception as e:
                 return Response(
-                    {"success": False, "message": "Material file field is not configured."},
+                    {"success": False, "message": f"Supabase upload failed: {str(e)}"},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
-
-            old_file = getattr(material, file_field.name, None)
-            if old_file and hasattr(old_file, "delete"):
-                old_file.delete(save=False)
-            setattr(material, file_field.name, upload)
 
             title_field = _field(Material, ("title", "name", "file_name"))
             if title_field and not request.data.get("title"):
@@ -903,11 +947,26 @@ class MentorMaterialDetailView(APIView):
         Material = material.__class__
         file_field = _field(Material, FILE_NAMES)
         stored_file = getattr(material, file_field.name, None) if file_field else None
+        supabase_url = _read(material, ("supabase_url",), "")
+
+        # Best-effort remove Supabase object if its URL is a public bucket URL.
+        if supabase_url:
+            bucket = os.environ.get("SUPABASE_BUCKET", "edutrack-videos")
+            marker = f"/storage/v1/object/public/{bucket}/"
+            if marker in str(supabase_url):
+                storage_path = str(supabase_url).split(marker, 1)[1]
+                try:
+                    supabase.storage.from_(bucket).remove([storage_path])
+                except Exception:
+                    pass
 
         material.delete()
 
         if stored_file and hasattr(stored_file, "delete"):
-            stored_file.delete(save=False)
+            try:
+                stored_file.delete(save=False)
+            except Exception:
+                pass
 
         return Response(
             {"success": True, "message": "Material removed successfully."},
