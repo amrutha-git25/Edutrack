@@ -1880,11 +1880,30 @@ def material_preview(request, material_id):
             status=status.HTTP_404_NOT_FOUND
         )
 
+    # Supabase-hosted materials do not have a Django FileField attachment.
+    # Redirect the authenticated preview request to the stored Supabase URL.
     if not material.file:
+        external_url = (
+            getattr(material, "supabase_url", None)
+            or getattr(material, "video_url", None)
+            or getattr(material, "file_url", None)
+        )
+
+        if isinstance(external_url, str):
+            external_url = external_url.strip()
+
+        if external_url and external_url.startswith(("https://", "http://")):
+            response = redirect(external_url)
+            response["X-Content-Type-Options"] = "nosniff"
+            return response
+
         return Response(
             {
                 "success": False,
-                "message": "No file is attached to this material."
+                "message": (
+                    "No file is attached and no valid Supabase URL "
+                    "is saved for this material."
+                )
             },
             status=status.HTTP_404_NOT_FOUND
         )
