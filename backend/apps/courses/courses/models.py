@@ -191,7 +191,22 @@ class Material(models.Model):
         choices=MATERIAL_TYPES,
         default="document",
     )
+    binary_content = models.BinaryField(
+    null=True,
+    blank=True,
+    )
 
+    binary_filename = models.CharField(
+    max_length=255,
+    blank=True,
+    default="",
+    )
+
+    binary_content_type = models.CharField(
+    max_length=100,
+    blank=True,
+    default="",
+    )
     is_published = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -202,3 +217,4 @@ class Material(models.Model):
 
     def __str__(self):
         return self.title
+

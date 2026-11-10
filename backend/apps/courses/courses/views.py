@@ -31,6 +31,10 @@ import shutil
 import subprocess
 import tempfile
 
+import re
+from django.db import connection
+from django.http import HttpResponse
+
 from pathlib import Path
 from io import BytesIO
 
@@ -576,7 +580,123 @@ def material_detail(request, material_id):
         status=status.HTTP_200_OK
     )
 
+@api_view(["GET", "HEAD"])
+@permission_classes([IsAuthenticated])
+def material_binary(request, material_id):
+    material = get_object_or_404(
+        Material.objects.select_related("topic__course"),
+        pk=material_id,
+    )
 
+    course = material.topic.course
+
+    can_manage = _mentor_can_manage_course(
+        request.user,
+        course,
+    )
+
+    if not _user_can_view_course(request.user, course):
+        return Response(
+            {"detail": "You do not have permission to view this material."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    if not can_manage and not material.is_published:
+        return Response(
+            {"detail": "Material not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    if material.binary_content is None:
+        return Response(
+            {"detail": "This material is not stored in the database."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    table = connection.ops.quote_name(Material._meta.db_table)
+    column = connection.ops.quote_name("binary_content")
+    pk_column = connection.ops.quote_name(Material._meta.pk.column)
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"SELECT octet_length({column}) FROM {table} "
+            f"WHERE {pk_column} = %s",
+            [material_id],
+        )
+        result = cursor.fetchone()
+
+    if not result or result[0] is None:
+        return Response(
+            {"detail": "Video data not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    total_size = result[0]
+    start = 0
+    end = total_size - 1
+    status_code = 200
+
+    range_header = request.headers.get("Range")
+
+    if range_header:
+        match = re.match(r"bytes=(\d*)-(\d*)$", range_header.strip())
+
+        if not match:
+            response = HttpResponse(status=416)
+            response["Content-Range"] = f"bytes */{total_size}"
+            return response
+
+        first, last = match.groups()
+
+        if first:
+            start = int(first)
+            end = int(last) if last else total_size - 1
+        else:
+            suffix_length = int(last)
+            start = max(total_size - suffix_length, 0)
+            end = total_size - 1
+
+        if start >= total_size or end < start:
+            response = HttpResponse(status=416)
+            response["Content-Range"] = f"bytes */{total_size}"
+            return response
+
+        end = min(end, total_size - 1)
+        status_code = 206
+
+    length = end - start + 1
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"SELECT substring({column} from %s for %s) "
+            f"FROM {table} WHERE {pk_column} = %s",
+            [start + 1, length, material_id],
+        )
+        content = cursor.fetchone()[0]
+
+    content_type = (
+        material.binary_content_type
+        or mimetypes.guess_type(material.binary_filename)[0]
+        or "application/octet-stream"
+    )
+
+    response = HttpResponse(
+        b"" if request.method == "HEAD" else content,
+        content_type=content_type,
+        status=status_code,
+    )
+
+    response["Accept-Ranges"] = "bytes"
+    response["Content-Length"] = str(length)
+    response["Content-Disposition"] = "inline"
+    response["X-Content-Type-Options"] = "nosniff"
+
+    if status_code == 206:
+        response["Content-Range"] = (
+            f"bytes {start}-{end}/{total_size}"
+        )
+
+    return response
 # ============================================================
 # 7. LIST MENTOR ASSIGNMENTS / CREATE ASSIGNMENT
 # ============================================================

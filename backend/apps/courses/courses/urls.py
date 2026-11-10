@@ -105,4 +105,9 @@ path(
     views.material_preview,
     name="material-preview",
 ),
+path(
+    "materials/<int:material_id>/file/",
+    views.material_binary,
+    name="material-binary",
+),
 ]

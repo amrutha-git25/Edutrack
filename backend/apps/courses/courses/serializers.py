@@ -209,33 +209,134 @@ class MaterialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Material
-        fields = ["id", "topic", "title", "description", "file",
-                  "file_url", "file_name", "material_type", "is_published",
-                  "created_at", "updated_at"]
-        read_only_fields = ["id", "topic", "file_url", "file_name",
-                            "created_at", "updated_at"]
+        fields = [
+            "id",
+            "topic",
+            "title",
+            "description",
+            "file",
+            "file_url",
+            "file_name",
+            "material_type",
+            "is_published",
+            "binary_content",
+            "binary_filename",
+            "binary_content_type",
+            "created_at",
+            "updated_at",
+        ]
+
+        read_only_fields = [
+            "id",
+            "topic",
+            "file_url",
+            "file_name",
+            "binary_content",
+            "binary_filename",
+            "binary_content_type",
+            "created_at",
+            "updated_at",
+        ]
 
     def get_file_url(self, obj):
         request = self.context.get("request")
-        if not obj.file:
-            return None
-        url = obj.file.url
-        return request.build_absolute_uri(url) if request else url
+
+        if obj.binary_content is not None:
+            from django.urls import reverse
+
+            url = reverse(
+                "material-binary",
+                kwargs={"material_id": obj.id},
+            )
+
+            return request.build_absolute_uri(url) if request else url
+
+        if obj.file:
+            url = obj.file.url
+            return request.build_absolute_uri(url) if request else url
+
+        return None
 
     def get_file_name(self, obj):
-        return obj.file.name.rsplit("/", 1)[-1] if obj.file else None
+        if obj.binary_filename:
+            return obj.binary_filename
+
+        if obj.file:
+            return obj.file.name.rsplit("/", 1)[-1]
+
+        return None
 
     def validate_file(self, value):
         if value.size > 100 * 1024 * 1024:
-            raise serializers.ValidationError("File size must not exceed 100 MB.")
+            raise serializers.ValidationError(
+                "File size must not exceed 100 MB."
+            )
+
         allowed = {
-            "pdf", "doc", "docx", "ppt", "pptx", "txt", "csv",
-            "mp4", "webm", "mov", "m4v", "mp3", "wav", "ogg",
+            "pdf", "doc", "docx", "ppt", "pptx",
+            "xls", "xlsx", "odt", "ods", "odp", "rtf",
+            "txt", "csv",
+            "mp4", "webm", "mov", "m4v",
+            "mp3", "wav", "ogg",
             "png", "jpg", "jpeg", "webp",
         }
-        extension = value.name.rsplit(".", 1)[-1].lower() if "." in value.name else ""
+
+        extension = (
+            value.name.rsplit(".", 1)[-1].lower()
+            if "." in value.name
+            else ""
+        )
+
         if extension not in allowed:
             raise serializers.ValidationError(
-                "Unsupported file type. Upload a document, video, audio, or image."
+                "Unsupported file type."
             )
+
         return value
+
+    def create(self, validated_data):
+        uploaded_file = validated_data.pop("file", None)
+
+        material = Material.objects.create(**validated_data)
+
+        if uploaded_file:
+            material.binary_content = uploaded_file.read()
+            material.binary_filename = uploaded_file.name
+            material.binary_content_type = (
+                uploaded_file.content_type
+                or "application/octet-stream"
+            )
+            material.file = ""
+
+            material.save(
+                update_fields=[
+                    "binary_content",
+                    "binary_filename",
+                    "binary_content_type",
+                    "file",
+                    "updated_at",
+                ]
+            )
+
+        return material
+
+    def update(self, instance, validated_data):
+        uploaded_file = validated_data.pop("file", None)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        if uploaded_file:
+            instance.binary_content = uploaded_file.read()
+            instance.binary_filename = uploaded_file.name
+            instance.binary_content_type = (
+                uploaded_file.content_type
+                or "application/octet-stream"
+            )
+
+            # New uploads are stored in Neon, not the legacy FileField.
+            instance.file = ""
+
+        instance.save()
+
+        return instance
