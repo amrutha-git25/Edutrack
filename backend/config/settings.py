@@ -400,3 +400,29 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+# =========================
+# CLOUDINARY CONFIGURATION
+# =========================
+
+import os
+from urllib.parse import urlparse
+import cloudinary
+
+CLOUDINARY_URL = os.environ.get("CLOUDINARY_URL", "").strip()
+
+if CLOUDINARY_URL:
+    parsed_url = urlparse(CLOUDINARY_URL)
+
+    CLOUDINARY_STORAGE = {
+        "CLOUD_NAME": parsed_url.hostname,
+        "API_KEY": parsed_url.username,
+        "API_SECRET": parsed_url.password,
+        "SECURE": True,
+    }
+
+    cloudinary.config(
+        cloud_name=parsed_url.hostname,
+        api_key=parsed_url.username,
+        api_secret=parsed_url.password,
+        secure=True,
+    )
