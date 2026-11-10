@@ -206,7 +206,7 @@ path(
     name="mentor-change-password",
 ),
 path(
-    "topics/<int:topic_id>/materials/upload-url/",
+    "materials/topics/<int:topic_id>/materials/upload-url/",
     MentorTopicMaterialUploadUrlView.as_view(),
     name="mentor-topic-material-upload-url",
 ),
