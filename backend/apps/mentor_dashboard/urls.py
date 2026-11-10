@@ -3,6 +3,7 @@ from .views import (
     MentorDashboardView,
     MentorSettingsView,
     MentorActivitiesView,
+
 )
 from .mentor_messages_views import (
     MentorMessageContactsView,
@@ -52,6 +53,7 @@ from .topic_material_views import (
     MentorTopicDetailView,
     MentorTopicMaterialListCreateView,
     MentorMaterialDetailView,
+    MentorTopicMaterialUploadUrlView,
 )
 app_name = "mentor_dashboard"
 
@@ -202,5 +204,10 @@ path(
     "profile/password/",
     MentorChangePasswordView.as_view(),
     name="mentor-change-password",
+),
+path(
+    "topics/<int:topic_id>/materials/upload-url/",
+    MentorTopicMaterialUploadUrlView.as_view(),
+    name="mentor-topic-material-upload-url",
 ),
 ]

@@ -725,6 +725,47 @@ class MentorTopicDetailView(APIView):
         )
 
 
+class MentorTopicMaterialUploadUrlView(APIView):
+    """Create a short-lived signed URL for direct browser-to-Supabase uploads."""
+    permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser, FormParser]
+
+    def post(self, request, topic_id):
+        denied = _mentor_denied(request)
+        if denied:
+            return denied
+        topic, denied = _owned_topic_or_response(request, topic_id)
+        if denied:
+            return denied
+
+        file_name = Path(str(request.data.get("file_name") or "").strip()).name
+        content_type = str(request.data.get("content_type") or "application/octet-stream").strip()
+        try:
+            file_size = int(request.data.get("file_size") or 0)
+        except (TypeError, ValueError):
+            return Response({"success": False, "message": "Invalid file size."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not file_name:
+            return Response({"success": False, "message": "File name is required."}, status=status.HTTP_400_BAD_REQUEST)
+        if Path(file_name).suffix.lower() not in ALLOWED_EXTENSIONS:
+            return Response({"success": False, "message": "Unsupported file type."}, status=status.HTTP_400_BAD_REQUEST)
+        if file_size <= 0 or file_size > MAX_UPLOAD_BYTES:
+            return Response({"success": False, "message": "File must be between 1 byte and 100 MB."}, status=status.HTTP_400_BAD_REQUEST)
+
+        bucket = os.environ.get("SUPABASE_BUCKET", "edutrack-videos")
+        file_path = f"topic_{topic.pk}/{uuid.uuid4().hex}_{file_name}"
+        try:
+            signed = supabase.storage.from_(bucket).create_signed_upload_url(file_path)
+            data = signed if isinstance(signed, dict) else getattr(signed, "data", {})
+            token = data.get("token") if isinstance(data, dict) else None
+            returned_path = data.get("path") if isinstance(data, dict) else None
+            if not token:
+                raise ValueError("Supabase did not return an upload token.")
+            return Response({"success": True, "path": returned_path or file_path, "token": token, "content_type": content_type})
+        except Exception as exc:
+            return Response({"success": False, "message": f"Could not create signed upload URL: {exc}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class MentorTopicMaterialListCreateView(APIView):
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
@@ -753,105 +794,64 @@ class MentorTopicMaterialListCreateView(APIView):
         denied = _mentor_denied(request)
         if denied:
             return denied
-
         topic, denied = _owned_topic_or_response(request, topic_id)
         if denied:
             return denied
 
         Material = _model("Material")
         if Material is None:
-            return Response(
-                {"success": False, "message": "Material model was not found."},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+            return Response({"success": False, "message": "Material model was not found."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        upload = next((request.FILES.get(key) for key in FILE_NAMES if request.FILES.get(key)), None)
-        validation_error = _validate_upload(upload)
-        if validation_error:
-            return Response(
-                {"success": False, "message": validation_error},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        file_name = Path(str(request.data.get("file_name") or "").strip()).name
+        storage_path = str(request.data.get("storage_path") or "").strip()
+        video_url = str(request.data.get("supabase_url") or "").strip()
+        try:
+            file_size = int(request.data.get("file_size") or 0)
+        except (TypeError, ValueError):
+            file_size = 0
+
+        if not file_name or not storage_path or not video_url:
+            return Response({"success": False, "message": "file_name, storage_path, and supabase_url are required."}, status=status.HTTP_400_BAD_REQUEST)
+        if not storage_path.startswith(f"topic_{topic.pk}/"):
+            return Response({"success": False, "message": "Storage path does not belong to this topic."}, status=status.HTTP_400_BAD_REQUEST)
+
+        bucket = os.environ.get("SUPABASE_BUCKET", "edutrack-videos")
+        marker = f"/storage/v1/object/public/{bucket}/"
+        if marker not in video_url or video_url.split(marker, 1)[1] != storage_path:
+            return Response({"success": False, "message": "Supabase URL does not match the storage path."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if Path(file_name).suffix.lower() not in ALLOWED_EXTENSIONS:
+            return Response({"success": False, "message": "Unsupported file type."}, status=status.HTTP_400_BAD_REQUEST)
+        if file_size <= 0 or file_size > MAX_UPLOAD_BYTES:
+            return Response({"success": False, "message": "File must be between 1 byte and 100 MB."}, status=status.HTTP_400_BAD_REQUEST)
+        if _field(Material, TOPIC_NAMES, relation=True) is None:
+            return Response({"success": False, "message": "Material model must have a topic foreign key."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         material = Material()
         _set_relation_if_present(Material, material, TOPIC_NAMES, topic)
-        _set_if_present(Material, material, ("title", "name", "file_name"),
-                        str(request.data.get("title") or upload.name).strip())
-        _set_if_present(Material, material, ("description", "notes"),
-                        str(request.data.get("description") or "").strip())
+        _set_if_present(Material, material, ("title", "name", "file_name"), str(request.data.get("title") or file_name).strip())
+        _set_if_present(Material, material, ("description", "notes"), str(request.data.get("description") or "").strip())
+        _set_if_present(Material, material, ("supabase_url",), video_url)
 
-        # Upload the actual file to Supabase Storage; Neon stores only its URL.
-        bucket = os.environ.get("SUPABASE_BUCKET", "edutrack-videos")
-        file_path = (
-            f"topic_{topic.pk}/"
-            f"{uuid.uuid4().hex}_{Path(upload.name).name}"
-        )
-
-        try:
-            supabase.storage.from_(bucket).upload(
-                file_path,
-                upload.read(),
-                file_options={
-                    "content-type": upload.content_type or "application/octet-stream",
-                    "upsert": "false",
-                },
-            )
-            video_url = supabase.storage.from_(bucket).get_public_url(file_path)
-            if isinstance(video_url, dict):
-                video_url = video_url.get("publicUrl") or video_url.get("publicURL") or ""
-            if not video_url:
-                raise ValueError("Supabase did not return a public URL.")
-
-            # Requires Material.supabase_url to be a URLField in the Django model.
-            material.supabase_url = video_url
-
-            # Do not store the large upload in Django's FileField.
-            file_field = _field(Material, FILE_NAMES)
-            if file_field is not None and hasattr(file_field, "upload_to"):
-                setattr(material, file_field.name, "")
-        except Exception as e:
-            return Response(
-                {"success": False, "message": f"Supabase upload failed: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        file_field = _field(Material, FILE_NAMES)
+        if file_field is not None and hasattr(file_field, "upload_to"):
+            setattr(material, file_field.name, "")
 
         type_field = _field(Material, ("material_type", "type", "content_type", "kind"))
         if type_field is not None and not type_field.is_relation:
             requested_type = str(request.data.get("material_type") or "").strip().lower()
             if requested_type:
-                valid_choices = {
-                    str(value).lower()
-                    for value, _label in getattr(type_field, "choices", [])
-                }
+                valid_choices = {str(value).lower() for value, _label in getattr(type_field, "choices", [])}
                 if valid_choices and requested_type not in valid_choices:
-                    return Response(
-                        {"success": False, "message": "Invalid material_type for this project."},
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
+                    return Response({"success": False, "message": "Invalid material_type for this project."}, status=status.HTTP_400_BAD_REQUEST)
                 setattr(material, type_field.name, requested_type)
 
-        # New uploads are visible to students when the model has a publication flag.
-        published_field = _field(
-            Material, ("is_published", "published", "is_visible", "available_to_students")
-        )
+        published_field = _field(Material, ("is_published", "published", "is_visible", "available_to_students"))
         if published_field is not None and not published_field.is_relation:
             setattr(material, published_field.name, True)
 
-        if _field(Material, TOPIC_NAMES, relation=True) is None:
-            return Response(
-                {"success": False, "message": "Material model must have a topic foreign key."},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
         material.save()
-        return Response(
-            {
-                "success": True,
-                "message": "Material uploaded successfully.",
-                "data": _material_data(request, material),
-            },
-            status=status.HTTP_201_CREATED,
-        )
+        return Response({"success": True, "message": "Material uploaded successfully.", "data": _material_data(request, material)}, status=status.HTTP_201_CREATED)
 
 
 class MentorMaterialDetailView(APIView):
@@ -869,48 +869,31 @@ class MentorMaterialDetailView(APIView):
 
         Material = material.__class__
 
-        upload = next((request.FILES.get(key) for key in FILE_NAMES if request.FILES.get(key)), None)
-        if upload:
-            validation_error = _validate_upload(upload)
-            if validation_error:
-                return Response(
-                    {"success": False, "message": validation_error},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+        # React uploads the new object directly to Supabase. This endpoint stores metadata.
+        storage_path = str(request.data.get("storage_path") or "").strip()
+        video_url = str(request.data.get("supabase_url") or "").strip()
+        file_name = Path(str(request.data.get("file_name") or "").strip()).name
 
+        if storage_path or video_url:
+            if not storage_path or not video_url or not file_name:
+                return Response({"success": False, "message": "file_name, storage_path, and supabase_url are required together."}, status=status.HTTP_400_BAD_REQUEST)
+            topic_relation = _field(Material, TOPIC_NAMES, relation=True)
+            topic = getattr(material, topic_relation.name) if topic_relation else None
+            if topic is None or not storage_path.startswith(f"topic_{topic.pk}/"):
+                return Response({"success": False, "message": "Storage path does not belong to this material's topic."}, status=status.HTTP_400_BAD_REQUEST)
             bucket = os.environ.get("SUPABASE_BUCKET", "edutrack-videos")
-            file_path = (
-                f"topic_{material.pk}/"
-                f"{uuid.uuid4().hex}_{Path(upload.name).name}"
-            )
-            try:
-                supabase.storage.from_(bucket).upload(
-                    file_path,
-                    upload.read(),
-                    file_options={
-                        "content-type": upload.content_type or "application/octet-stream",
-                        "upsert": "false",
-                    },
-                )
-                video_url = supabase.storage.from_(bucket).get_public_url(file_path)
-                if isinstance(video_url, dict):
-                    video_url = video_url.get("publicUrl") or video_url.get("publicURL") or ""
-                if not video_url:
-                    raise ValueError("Supabase did not return a public URL.")
-                material.supabase_url = video_url
-
-                file_field = _field(Material, FILE_NAMES)
-                if file_field is not None and hasattr(file_field, "upload_to"):
-                    setattr(material, file_field.name, "")
-            except Exception as e:
-                return Response(
-                    {"success": False, "message": f"Supabase upload failed: {str(e)}"},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                )
-
+            marker = f"/storage/v1/object/public/{bucket}/"
+            if marker not in video_url or video_url.split(marker, 1)[1] != storage_path:
+                return Response({"success": False, "message": "Supabase URL does not match the storage path."}, status=status.HTTP_400_BAD_REQUEST)
+            if Path(file_name).suffix.lower() not in ALLOWED_EXTENSIONS:
+                return Response({"success": False, "message": "Unsupported file type."}, status=status.HTTP_400_BAD_REQUEST)
+            _set_if_present(Material, material, ("supabase_url",), video_url)
             title_field = _field(Material, ("title", "name", "file_name"))
             if title_field and not request.data.get("title"):
-                setattr(material, title_field.name, upload.name)
+                setattr(material, title_field.name, file_name)
+            file_field = _field(Material, FILE_NAMES)
+            if file_field is not None and hasattr(file_field, "upload_to"):
+                setattr(material, file_field.name, "")
 
         if "title" in request.data or "name" in request.data:
             title = str(request.data.get("title", request.data.get("name", ""))).strip()
