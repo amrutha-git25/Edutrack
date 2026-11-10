@@ -4,7 +4,7 @@
 from pathlib import Path
 import os
 import uuid
-
+from urllib.parse import unquote, urlparse
 from django.apps import apps
 from django.core.exceptions import FieldDoesNotExist
 from django.db import transaction
@@ -376,6 +376,22 @@ def _set_relation_if_present(model, instance, candidates, value):
     if field is not None and field.related_model == value.__class__:
         setattr(instance, field.name, value)
         return field.name
+    return None
+
+
+def _validate_supabase_public_url(storage_path, video_url, bucket):
+    """Validate a public Supabase URL against the decoded object storage path."""
+    parsed_url = urlparse(video_url)
+    url_path = unquote(parsed_url.path).strip("/")
+    expected_prefix = f"storage/v1/object/public/{bucket}/"
+
+    if not url_path.startswith(expected_prefix):
+        return "Supabase URL does not match the configured bucket."
+
+    url_storage_path = url_path[len(expected_prefix):]
+    if url_storage_path != unquote(storage_path).strip("/"):
+        return "Supabase URL does not match the storage path."
+
     return None
 
 
@@ -816,9 +832,12 @@ class MentorTopicMaterialListCreateView(APIView):
             return Response({"success": False, "message": "Storage path does not belong to this topic."}, status=status.HTTP_400_BAD_REQUEST)
 
         bucket = os.environ.get("SUPABASE_BUCKET", "edutrack-videos")
-        marker = f"/storage/v1/object/public/{bucket}/"
-        if marker not in video_url or video_url.split(marker, 1)[1] != storage_path:
-            return Response({"success": False, "message": "Supabase URL does not match the storage path."}, status=status.HTTP_400_BAD_REQUEST)
+        url_error = _validate_supabase_public_url(storage_path, video_url, bucket)
+        if url_error:
+            return Response(
+                {"success": False, "message": url_error},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if Path(file_name).suffix.lower() not in ALLOWED_EXTENSIONS:
             return Response({"success": False, "message": "Unsupported file type."}, status=status.HTTP_400_BAD_REQUEST)
@@ -882,9 +901,12 @@ class MentorMaterialDetailView(APIView):
             if topic is None or not storage_path.startswith(f"topic_{topic.pk}/"):
                 return Response({"success": False, "message": "Storage path does not belong to this material's topic."}, status=status.HTTP_400_BAD_REQUEST)
             bucket = os.environ.get("SUPABASE_BUCKET", "edutrack-videos")
-            marker = f"/storage/v1/object/public/{bucket}/"
-            if marker not in video_url or video_url.split(marker, 1)[1] != storage_path:
-                return Response({"success": False, "message": "Supabase URL does not match the storage path."}, status=status.HTTP_400_BAD_REQUEST)
+            url_error = _validate_supabase_public_url(storage_path, video_url, bucket)
+            if url_error:
+                return Response(
+                    {"success": False, "message": url_error},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             if Path(file_name).suffix.lower() not in ALLOWED_EXTENSIONS:
                 return Response({"success": False, "message": "Unsupported file type."}, status=status.HTTP_400_BAD_REQUEST)
             _set_if_present(Material, material, ("supabase_url",), video_url)
