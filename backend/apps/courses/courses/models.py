@@ -1,7 +1,7 @@
 
 from django.conf import settings
 from django.db import models
-
+from .storage import EduTrackCloudinaryStorage
 
 class Course(models.Model):
     class Status(models.TextChoices):
@@ -176,15 +176,24 @@ class Material(models.Model):
         on_delete=models.CASCADE,
         related_name="materials",
     )
+
     title = models.CharField(max_length=255)
+
     description = models.TextField(blank=True)
-    file = models.FileField(upload_to="course_materials/%Y/%m/")
+
+    file = models.FileField(
+        upload_to="course_materials/%Y/%m/",
+        storage=EduTrackCloudinaryStorage(),
+    )
+
     material_type = models.CharField(
         max_length=20,
         choices=MATERIAL_TYPES,
         default="document",
     )
+
     is_published = models.BooleanField(default=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

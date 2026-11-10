@@ -65,7 +65,8 @@ INSTALLED_APPS = [
 'rest_framework_simplejwt',
 'corsheaders',
 'drf_spectacular',
- 
+ "cloudinary",
+"cloudinary_storage",
 ]
 
 MIDDLEWARE = [
@@ -380,5 +381,22 @@ LOGGING = {
             "level": "ERROR",
             "propagate": False,
         },
+    },
+}
+# Cloudinary configuration
+import os
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
+}
+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
