@@ -15,7 +15,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 from django.core.files.storage import default_storage
 
-from .models import SystemSettings, AdminProfile, Student, StudentSettings
+from .models import SystemSettings, AdminProfile
+from apps.users.users.models import Student, StudentSettings
 from .serializers import (
     ProfileSerializer,
     ChangePasswordSerializer,
