@@ -150,6 +150,7 @@ export default function Profile() {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState("");
+  const [authenticatedPhotoSrc, setAuthenticatedPhotoSrc] = useState("");
   const [activeTab, setActiveTab] = useState("personal");
 
   const [showPasswords, setShowPasswords] = useState({
@@ -226,6 +227,57 @@ export default function Profile() {
       }
     };
   }, []);
+
+  // Fetch the protected profile image with the JWT; <img> cannot attach
+  // the Authorization header itself.
+  useEffect(() => {
+    let active = true;
+    let objectUrl = null;
+
+    async function loadAuthenticatedPhoto() {
+      const photoUrl = profile.profile_picture;
+
+      if (!photoUrl) {
+        setAuthenticatedPhotoSrc("");
+        return;
+      }
+
+      const token = getAccessToken();
+
+      if (!token) {
+        setAuthenticatedPhotoSrc("");
+        return;
+      }
+
+      try {
+        const response = await fetch(photoUrl, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          throw new Error("Unable to load profile photo.");
+        }
+
+        const blob = await response.blob();
+        objectUrl = URL.createObjectURL(blob);
+
+        if (active) {
+          setAuthenticatedPhotoSrc(objectUrl);
+        } else {
+          URL.revokeObjectURL(objectUrl);
+        }
+      } catch {
+        if (active) setAuthenticatedPhotoSrc("");
+      }
+    }
+
+    loadAuthenticatedPhoto();
+
+    return () => {
+      active = false;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [profile.profile_picture]);
 
   const fullName =
     `${profile.first_name} ${profile.last_name}`.trim() || "Administrator";
@@ -515,7 +567,7 @@ export default function Profile() {
     }
   };
 
-  const avatarSrc = preview || profile.profile_picture;
+  const avatarSrc = preview || authenticatedPhotoSrc;
 
   if (loading) {
     return (
