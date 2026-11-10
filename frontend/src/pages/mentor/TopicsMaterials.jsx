@@ -1,5 +1,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import {
   FiBookOpen,
@@ -25,6 +26,15 @@ const API_BASE = (
 ).replace(/\/+$/, "");
 
 const API = `${API_BASE}/mentor/materials`;
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_BUCKET = import.meta.env.VITE_SUPABASE_BUCKET || "edutrack-videos";
+
+const supabaseClient =
+  SUPABASE_URL && SUPABASE_ANON_KEY
+    ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
 
 function getAccessToken() {
   return (
@@ -588,36 +598,95 @@ export default function TopicsMaterials() {
     setSaving(true);
 
     try {
-      const formData = new FormData();
-
-      if (materialForm.title.trim()) {
-        formData.append("title", materialForm.title.trim());
-      }
-
-      formData.append("description", materialForm.description.trim());
-
-      if (materialForm.material_type) {
-        formData.append("material_type", materialForm.material_type);
-      }
+      const metadata = {
+        title: materialForm.title.trim() || materialForm.file?.name || materialModal.material?.title || "",
+        description: materialForm.description.trim(),
+        material_type: materialForm.material_type || undefined,
+      };
 
       if (materialForm.file) {
-        formData.append("file", materialForm.file);
-      }
+        if (!supabaseClient) {
+          throw new Error(
+            "Supabase frontend configuration is missing. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY."
+          );
+        }
 
-      if (materialModal.mode === "edit") {
+        // Django generates a signed upload token after validating the mentor.
+        const signedPayload = await apiRequest(
+          `/topics/${selectedTopic.id}/materials/upload-url/`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              file_name: materialForm.file.name,
+              content_type: materialForm.file.type || "application/octet-stream",
+              file_size: materialForm.file.size,
+            }),
+          }
+        );
+
+        const storagePath = signedPayload.path || signedPayload.data?.path;
+        const uploadToken = signedPayload.token || signedPayload.data?.token;
+
+        if (!storagePath || !uploadToken) {
+          throw new Error("Backend did not return the Supabase upload path and token.");
+        }
+
+        toast.info("Uploading directly to Supabase Storage…");
+
+        const { error: uploadError } = await supabaseClient.storage
+          .from(SUPABASE_BUCKET)
+          .uploadToSignedUrl(storagePath, uploadToken, materialForm.file, {
+            contentType: materialForm.file.type || "application/octet-stream",
+            upsert: true,
+          });
+
+        if (uploadError) {
+          throw new Error(uploadError.message || "Supabase upload failed.");
+        }
+
+        const { data: publicUrlData } = supabaseClient.storage
+          .from(SUPABASE_BUCKET)
+          .getPublicUrl(storagePath);
+
+        const file_url = publicUrlData?.publicUrl || "";
+
+        // Persist metadata in Neon through Django after the storage upload succeeds.
+        const savePayload = {
+          ...metadata,
+          file_name: materialForm.file.name,
+          file_size: materialForm.file.size,
+          storage_path: storagePath,
+          supabase_url: file_url,
+          material_type:
+            materialForm.material_type ||
+            (String(materialForm.file.type).startsWith("video/")
+              ? "video"
+              : String(materialForm.file.type).startsWith("image/")
+                ? "image"
+                : "document"),
+        };
+
+        if (materialModal.mode === "edit") {
+          await apiRequest(`/materials/${materialModal.material.id}/`, {
+            method: "PATCH",
+            body: JSON.stringify(savePayload),
+          });
+          toast.success("Material replaced successfully.");
+        } else {
+          await apiRequest(`/topics/${selectedTopic.id}/materials/`, {
+            method: "POST",
+            body: JSON.stringify(savePayload),
+          });
+          toast.success("Material uploaded successfully.");
+        }
+      } else if (materialModal.mode === "edit") {
         await apiRequest(`/materials/${materialModal.material.id}/`, {
           method: "PATCH",
-          body: formData,
+          body: JSON.stringify(metadata),
         });
-
         toast.success("Material updated successfully.");
       } else {
-        await apiRequest(`/topics/${selectedTopic.id}/materials/`, {
-          method: "POST",
-          body: formData,
-        });
-
-        toast.success("Material uploaded successfully.");
+        throw new Error("Choose a file to upload.");
       }
 
       setMaterialModal(null);
@@ -630,7 +699,7 @@ export default function TopicsMaterials() {
     }
   }
 
-  async function deleteMaterial(material) {
+    async function deleteMaterial(material) {
     const confirmed = window.confirm(
       `Delete "${material.title || "this material"}"? This action cannot be undone.`
     );
