@@ -180,7 +180,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://edutrack-16ki.vercel.app",
-    "https://edutrack-bvhsguih9-krify.vercel.app"
+    "https://edutrack-spra-nzvx2gmgu-krify.vercel.app"
 ]
 
 REST_FRAMEWORK = {
