@@ -232,7 +232,7 @@ def _topic_payload(topic):
 def _material_payload(request, material):
     file_value = _value(
         material,
-        ("file", "document", "video", "material_file", "attachment", "file_url", "url", "video_url"),
+        ("supabase_url", "file_url", "url", "video_url", "file", "document", "video", "material_file", "attachment"),
     )
     material_type = _value(material, ("material_type", "type", "content_type", "kind"), "")
     title = _value(material, ("title", "name", "file_name", "original_name"), "Learning material")
