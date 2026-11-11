@@ -75,3 +75,16 @@ def upload_course_thumbnail(uploaded_file):
         )
 
     return str(public_url)
+
+from django.core.files.storage import FileSystemStorage
+
+
+class EduTrackCloudinaryStorage(FileSystemStorage):
+    """
+    Legacy storage class retained so old Django migrations
+    can load successfully.
+
+    New course thumbnail uploads use Supabase Storage.
+    """
+
+    pass
