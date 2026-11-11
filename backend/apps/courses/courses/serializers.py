@@ -1,13 +1,29 @@
-
 from rest_framework import serializers
 from .models import Course
+from .storage import upload_course_thumbnail
+
+
+class SupabaseThumbnailImageField(serializers.ImageField):
+    """Return the Supabase URL stored in the thumbnail field."""
+
+    def to_representation(self, value):
+        if not value:
+            return None
+
+        return getattr(value, "name", value)
 
 
 class CourseSerializer(serializers.ModelSerializer):
     mentor_name = serializers.SerializerMethodField()
 
+    thumbnail = SupabaseThumbnailImageField(
+        required=False,
+        allow_null=True,
+    )
+
     class Meta:
         model = Course
+
         fields = [
             "id",
             "title",
@@ -21,13 +37,73 @@ class CourseSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at", "mentor_name"]
+
+        read_only_fields = [
+            "id",
+            "created_at",
+            "updated_at",
+            "mentor_name",
+        ]
 
     def get_mentor_name(self, obj):
         if obj.mentor:
-            return obj.mentor.get_full_name() or obj.mentor.username
+            return (
+                obj.mentor.get_full_name()
+                or obj.mentor.username
+            )
+
         return None
 
+    def create(self, validated_data):
+        uploaded_thumbnail = validated_data.pop(
+            "thumbnail",
+            None,
+        )
+
+        if uploaded_thumbnail:
+            try:
+                thumbnail_url = upload_course_thumbnail(
+                    uploaded_thumbnail
+                )
+
+                validated_data["thumbnail"] = thumbnail_url
+
+            except Exception as exc:
+                raise serializers.ValidationError({
+                    "thumbnail": (
+                        f"Supabase thumbnail upload failed: {exc}"
+                    )
+                }) from exc
+
+        return Course.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        uploaded_thumbnail = validated_data.pop(
+            "thumbnail",
+            None,
+        )
+
+        if uploaded_thumbnail:
+            try:
+                thumbnail_url = upload_course_thumbnail(
+                    uploaded_thumbnail
+                )
+
+                instance.thumbnail = thumbnail_url
+
+            except Exception as exc:
+                raise serializers.ValidationError({
+                    "thumbnail": (
+                        f"Supabase thumbnail upload failed: {exc}"
+                    )
+                }) from exc
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+
+        return instance
 
 from rest_framework import serializers
 from .models import Enrollment

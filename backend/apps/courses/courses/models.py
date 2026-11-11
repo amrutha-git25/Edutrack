@@ -1,7 +1,7 @@
 
 from django.conf import settings
 from django.db import models
-from .storage import EduTrackCloudinaryStorage
+
 
 class Course(models.Model):
     class Status(models.TextChoices):

@@ -65,8 +65,7 @@ INSTALLED_APPS = [
 'rest_framework_simplejwt',
 'corsheaders',
 'drf_spectacular',
- "cloudinary",
-"cloudinary_storage",
+
 ]
 
 MIDDLEWARE = [
@@ -182,7 +181,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "https://edutrack-16ki.vercel.app",
    "https://edutrack-spra.vercel.app",
-   "https://edutrack-n76f73vpb-krify.vercel.app"
+   "https://edutrack-spra-narwy8k23-krify.vercel.app",
 ]
 
 REST_FRAMEWORK = {
@@ -384,46 +383,36 @@ LOGGING = {
         },
     },
 }
-# Cloudinary configuration
-import os
+# =========================
+# SUPABASE STORAGE
+# =========================
 
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
-    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
-    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
-}
+SUPABASE_URL = config(
+    "SUPABASE_URL",
+    default="",
+).strip()
+
+SUPABASE_SERVICE_ROLE_KEY = config(
+    "SUPABASE_SERVICE_ROLE_KEY",
+    default="",
+).strip()
+
+SUPABASE_COURSE_THUMBNAILS_BUCKET = config(
+    "SUPABASE_COURSE_THUMBNAILS_BUCKET",
+    default="course-thumbnails",
+).strip()
+
+
+# =========================
+# DJANGO STORAGE
+# =========================
 
 STORAGES = {
     "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
+
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
-# =========================
-# CLOUDINARY CONFIGURATION
-# =========================
-
-import os
-from urllib.parse import urlparse
-import cloudinary
-
-CLOUDINARY_URL = os.environ.get("CLOUDINARY_URL", "").strip()
-
-if CLOUDINARY_URL:
-    parsed_url = urlparse(CLOUDINARY_URL)
-
-    CLOUDINARY_STORAGE = {
-        "CLOUD_NAME": parsed_url.hostname,
-        "API_KEY": parsed_url.username,
-        "API_SECRET": parsed_url.password,
-        "SECURE": True,
-    }
-
-    cloudinary.config(
-        cloud_name=parsed_url.hostname,
-        api_key=parsed_url.username,
-        api_secret=parsed_url.password,
-        secure=True,
-    )
