@@ -29,11 +29,11 @@ class Course(models.Model):
         default=Status.DRAFT,
     )
 
-    thumbnail = models.ImageField(
-        upload_to="course_thumbnails/",
-        null=True,
-        blank=True,
-    )
+    thumbnail = models.URLField(
+    max_length=1000,
+    null=True,
+    blank=True,
+)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
