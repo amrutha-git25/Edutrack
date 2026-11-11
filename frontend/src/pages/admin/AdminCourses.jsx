@@ -40,15 +40,27 @@ function getToken() {
 }
 
 function getImageUrl(thumbnail) {
-  if (!thumbnail || typeof thumbnail !== "string") return "";
-
-  if (/^https?:\/\//i.test(thumbnail)) {
-    return thumbnail;
+  if (!thumbnail || typeof thumbnail !== "string") {
+    return "";
   }
 
-  return `${API_ORIGIN}/${thumbnail.replace(/^\/+/, "")}`;
-}
+  // Accept only public Supabase Storage URLs.
+  if (/^https?:\/\//i.test(thumbnail)) {
+    if (
+      /\.supabase\.co\/storage\/v1\/object\/public\//i.test(
+        thumbnail
+      )
+    ) {
+      return thumbnail;
+    }
 
+    // Ignore legacy Cloudinary URLs.
+    return "";
+  }
+
+  // Do not use Render media paths for course thumbnails.
+  return "";
+}
 async function apiRequest(url, options = {}) {
   const token = getToken();
   const headers = { ...(options.headers || {}) };
